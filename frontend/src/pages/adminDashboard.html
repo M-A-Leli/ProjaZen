@@ -7,7 +7,187 @@
     <title>ProjaZen || Dashboard</title>
 </head>
 <body>
-    <h1>admin dashboard</h1>
+    <div class="sidebar">
+
+        <div class="admin" >
+            <ion-icon name="person-circle-outline"></ion-icon>
+            <p>Admin</p>
+        </div>
+        <hr>
+        <div class="projects" id="nav-projects">
+            <ion-icon name="albums-outline"></ion-icon>
+            <p>Projects</p>
+        </div>
+        <div class="users" id="nav-users">
+            <ion-icon name="people-outline"></ion-icon>
+            <p>Users</p>
+        </div>
+        <div class="notifications" id="nav-notifications">
+            <ion-icon name="notifications-circle-outline"></ion-icon>
+            <p>Notifications</p>
+        </div>
+        <div class="logout">
+            <ion-icon name="log-out-outline"></ion-icon>
+            <p>Log Out</p>
+        </div>
+
+    </div>
+    <div class="container">
+        <section id="projects" class="section">
+            <div class="welcome">
+                <div class="welcome-image">
+                    <img src="../images/welcome-image.avif" alt="welcome-image">
+                </div>
+                <div class="welcome-text">
+                    <p style="font-weight: 900;">Welcome Back!</p>
+                    <p style="color: blue; font-size: 30px; font-weight: 900;">Admin Name</p>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel maiores nihil magni rem repellendus
+                        illum optio iusto exercitationem iste, soluta ullam iure unde nemo natus eius dolore
+                        voluptatibus dicta! Nobis.</p>
+                </div>
+            </div>
+            <div class="projects-block">
+                <div class="create-project-button">
+                    <button>Create New Project</button>
+                </div>
+                <div class="project-form">
+                    <form>
+                      <label for="">Project Name</label>
+                      <br>
+                      <input type="text" id="project-name">
+                      <br><br>
+                      <label for="">Description</label>
+                      <br>
+                      <textarea></textarea>
+                      <br><br>
+                      <label for="">Start Date</label>
+                      <br>
+                      <input type="date" id="start-date">
+                      <br><br>
+                      <label for="">End Date</label>
+                      <br>
+                      <input type="date" id="end-date">
+                      <br><br>
+                      <button type="submit">Create Project</button>
+                      <br><br>
+                    </form>
+                </div>
+                <div class="projects-list">
+                    <div class="project-card">
+                        <div class="text">
+                            <h1>12</h1>
+                            <p>Unassigned</p>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="text">
+                            <h1>12</h1>
+                            <p>Assigned</p>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="text">
+                            <h1>12</h1>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="text">
+                            <h1>12</h1>
+                            <p>Expired</p>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="text">
+                            <h1>12</h1>
+                            <p>Over due</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="projects-table">
+                <table>
+                    <tr>
+                        <th>Project Name</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr>
+                        <td>E-Commerce</td>
+                        <td>Snack Website</td>
+                        <td>27th May</td>
+                        <td>31st May</td>
+                        <td>Completed</td>
+                        <td style="display: flex; gap: 5px;">
+                            <button id="update-project-button">Update</button>
+                            <button id="delete-project-button">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Project Manager</td>
+                        <td>admin, user and projects management</td>
+                        <td>1st June</td>
+                        <td>6th June</td>
+                        <td>Pending</td>
+                        <td style="display: flex; gap: 5px;">
+                            <button id="update-project-button">Update</button>
+                            <button id="delete-project-button">Delete</button>
+                        </td>
+                    </tr>
+                </table>
+                <div class="update-form">
+                    <form>
+                        <label for="">Project Name</label>
+                        <br>
+                        <input type="text" id="project-name">
+                        <br><br>
+                        <label for="">Description</label>
+                        <br>
+                        <textarea></textarea>
+                        <br><br>
+                        <label for="">Start Date</label>
+                        <br>
+                        <input type="date" id="start-date">
+                        <br><br>
+                        <label for="">End Date</label>
+                        <br>
+                        <input type="date" id="end-date">
+                        <br><br>
+                        <label for="">Assigned To:</label>
+                        <input type="text" id="assigned-to">
+                        <br><br>
+                        <button type="submit">Update</button>
+                      </form>
+                </div>
+                <div class="delete-project">
+                    
+                </div>
+            </div>
+        </section>
+        <section id="users" class="section" style="display: none;">
+            <div class="all-registered-users">
+                <h1>users</h1>
+            </div>
+
+        </section>
+        <section id="notifications" class="section" style="display: none;">
+
+        </section>
+        <section id="logout" class="section" style="display: none;">
+            <div class="logout-container">
+                <h2>Logout</h2>
+                <form action="/logout" method="POST">
+                    <p>Are you sure you want to logout?</p>
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </section>
+    </div>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     
     <script type="module" src="../scripts/adminDashboard.ts"></script>
 </body>
