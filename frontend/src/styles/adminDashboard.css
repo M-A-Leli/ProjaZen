@@ -185,7 +185,7 @@ table {
   }
   
   tr:nth-child(even) {
-    background-color: #dddddd;
+    background-color: #D6EEEE;
   }
   td > button{
     font-size: 12px;
@@ -226,34 +226,88 @@ table {
 .update-form button:hover{
     cursor: pointer;
 }
-  #users {
-    border:  1px solid red;
-    width:  100%;
-  }
-  #logout{
+.delete-project{
+    background: linear-gradient(aliceblue,skyblue);
+    padding: 12px;
+    font-size: 12px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0px 0px 10px 5px rgba(251, 224, 224, 0.5);
+    align-self: center;
+    text-align: center;
+}
+.delete-project button{
+    background-color: white;
+    color: black;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+}
+.yes-no-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+.delete-project p{
+    font-size: 20px;
+    font-weight: 300;
+}
+#users{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    gap: 30px;
+    height: auto; 
+}
+#users button{
+    display: flex;
+    gap: 30px;
+    padding: 10px;
+    background-color: cornflowerblue;
+    color: white;
+    border-radius: 5px;
+}
+#users button:hover{
+    cursor: pointer;
+}
+.user-buttons{
+    display: flex;
+    flex-direction: row;
+    padding: 30px;
+    gap: 30px;
+}
+#logout{
     width: 60vw;
   }
   .logout-container {
-    background-color: cadetblue;
+    display: flex;
     border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px 40px;
+    box-shadow: 0px 0px 10px 5px rgb(30, 49, 1);
+    padding: 20px 0px;
+    align-self: center;
     text-align: center;
-    width: 300px;
+    width: 60vw;
+    height: auto;
 }
-
-.logout-container h2 {
-    color: white;
+.logout-image img{
+    width: 80%;
+}
+.logout-text{
+    padding: 150px 50px;
+}
+.logout-text h2 {
+    color: black;
     margin-bottom: 20px;
 }
 
-.logout-container p {
-    color: #f0f8ff;
+.logout-text p {
+    color: black;
     font-size: 16px;
     margin-bottom: 20px;
 }
 
-.logout-container button {
+.logout-text button {
     background-color: rgb(6, 91, 125);
     border: none;
     border-radius: 8px;
@@ -264,7 +318,7 @@ table {
     transition: background-color 0.3s ease;
 }
 
-.logout-container button:hover {
+.logout-text button:hover {
     background-color: #054b6e;
 }
 
