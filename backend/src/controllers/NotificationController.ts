@@ -6,6 +6,14 @@ import Notification from '../models/Notification';
 import logger from '../utils/Logger';
 
 class NotificationController {
+    constructor() {
+        this.createNotification = this.createNotification.bind(this);
+        this.getNotificationsByUserId = this.getNotificationsByUserId.bind(this);
+        this.getUnreadNotifications = this.getUnreadNotifications.bind(this);
+        this.markNotificationAsRead = this.markNotificationAsRead.bind(this);
+        this.deleteNotification = this.deleteNotification.bind(this);
+    }
+
     async createNotification(req: Request, res: Response, next: NextFunction) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -17,7 +25,7 @@ class NotificationController {
             res.status(201).json(this.transformNotification(newNotification));
         } catch (error) {
             logger.error('Error creating notification:', error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -29,7 +37,7 @@ class NotificationController {
             res.json(notifications.map(notification => this.transformNotification(notification)));
         } catch (error) {
             logger.error(`Error fetching notifications for user ${userId}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -42,7 +50,7 @@ class NotificationController {
             res.json({count, notifications: unreadNotifications.map((unreadNotification: Notification) => this.transformNotification(unreadNotification))});
         } catch (error) {
             logger.error(`Error fetching unread notifications for user ${userId}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -54,7 +62,7 @@ class NotificationController {
             res.json(this.transformNotification(notification));
         } catch (error) {
             logger.error(`Error marking notification ${id} as read:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -66,7 +74,7 @@ class NotificationController {
             res.status(204).json({ success: result });
         } catch (error) {
             logger.error(`Error deleting notification ${id}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 

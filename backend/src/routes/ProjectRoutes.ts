@@ -9,8 +9,8 @@ router.get('/:id',authenticateToken,  authorizeUser, ProjectController.fetchProj
 router.post('/',authenticateToken,  authorizeAdmin, ProjectController.createProject);
 router.put('/:id',authenticateToken,  authorizeAdmin, ProjectController.updateProject);
 router.delete('/:id',authenticateToken,  authorizeAdmin, ProjectController.deleteProject);
-router.delete('/:status',authenticateToken,  authorizeAdmin, ProjectController.getProjectsByStatus);
-router.delete('/:id/change-status',authenticateToken,  authorizeAdmin, ProjectController.changeProjectStatus);
+router.get('/:status',authenticateToken,  authorizeAdmin, ProjectController.getProjectsByStatus);
+router.get('/:id/change-status',authenticateToken,  authorizeAdmin, ProjectController.changeProjectStatus);
 router.put('/:id/mark-completed',authenticateToken,  authorizeUser, ProjectController.markProjectAsCompleted);
 
 export default router;

@@ -1,13 +1,14 @@
 import bcrypt from 'bcrypt';
-import User from '../models/User';
+import { UniqueConstraintError } from 'sequelize';
 import createError from 'http-errors';
+import User from '../models/User';
 
 class UserService {
     async getAllUsers() {
         try {
             return await User.findAll();
         } catch (error) {
-            throw createError(500, 'Error fetching all users');
+            throw createError(500, `Error fetching all users: ${error}`);
         }
     }
 
@@ -19,17 +20,27 @@ class UserService {
             }
             return user;
         } catch (error) {
-            throw createError(500, `Error fetching user by ID ${id}`);
+            throw createError(500, `Error fetching user by ID ${id}: ${error}`);
         }
     }
 
     async createUser(userData: any) {
         try {
-            userData.password = await bcrypt.hash(userData.password, 10);
-            const newUser = await User.create(userData);
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(userData.password, salt);
+
+            const newUser = await User.create({
+                ...userData,
+                password: hashedPassword,
+                salt: salt,
+            });
+
             return newUser;
         } catch (error) {
-            throw createError(500, 'Error creating user');
+            if (error instanceof UniqueConstraintError) {
+                throw createError(409, 'Email already exists');
+            }
+            throw createError(500, `Error creating user: ${error}`);
         }
     }
 
@@ -45,7 +56,7 @@ class UserService {
             await user.update(updateData);
             return user;
         } catch (error) {
-            throw createError(500, `Error updating user by ID ${id}`);
+            throw createError(500, `Error updating user by ID ${id}: ${error}`);
         }
     }
 
@@ -58,7 +69,7 @@ class UserService {
             await user.destroy();
             return true;
         } catch (error) {
-            throw createError(500, `Error deleting user by ID ${id}`);
+            throw createError(500, `Error deleting user by ID ${id}: ${error}`);
         }
     }
 
@@ -70,7 +81,7 @@ class UserService {
             }
             return user;
         } catch (error) {
-            throw createError(500, `Error fetching user by email ${email}`);
+            throw createError(500, `Error fetching user by email ${email}: ${error}`);
         }
     }
 }

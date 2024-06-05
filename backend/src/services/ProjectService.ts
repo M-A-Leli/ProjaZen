@@ -9,7 +9,7 @@ class ProjectService {
         try {
             return await Project.findAll();
         } catch (error) {
-            throw createError(500, 'Error fetching all projects');
+            throw createError(500, `Error fetching all projects: ${error}`);
         }
     }
 
@@ -21,7 +21,7 @@ class ProjectService {
             }
             return project;
         } catch (error) {
-            throw createError(500, `Error fetching project by ID ${id}`);
+            throw createError(500, `Error fetching project by ID: ${error}`);
         }
     }
 
@@ -30,7 +30,7 @@ class ProjectService {
             const newProject = await Project.create(projectData);
             return newProject;
         } catch (error) {
-            throw createError(500, 'Error creating project');
+            throw createError(500, `Error creating project: ${error}`);
         }
     }
 
@@ -43,7 +43,7 @@ class ProjectService {
             await project.update(updateData);
             return project;
         } catch (error) {
-            throw createError(500, `Error updating project by ID ${id}`);
+            throw createError(500, `Error updating project by ID: ${error}`);
         }
     }
 
@@ -56,7 +56,7 @@ class ProjectService {
             await project.destroy();
             return true;
         } catch (error) {
-            throw createError(500, `Error deleting project by ID ${id}`);
+            throw createError(500, `Error deleting project by ID: ${error}`);
         }
     }
     
@@ -68,7 +68,19 @@ class ProjectService {
             }
             return projects;
         } catch (error) {
-            throw createError(500, `Error fetching ${status} projects`);
+            throw createError(500, `Error fetching ${status} projects: ${error}`);
+        }
+    }
+
+    async getProjectsByName(name: string) {
+        try {
+            const project = await Project.findOne({ where: {name} });
+            if (!project) {
+                throw createError(404, `Project not found`);
+            }
+            return project;
+        } catch (error) {
+            throw createError(500, `Error fetching product by name: ${error}`);
         }
     }
 
@@ -93,7 +105,7 @@ class ProjectService {
 
             return project;
         } catch (error) {
-            throw createError(500, `Error changing project status for ${id}`);
+            throw createError(500, `Error changing project status: ${error}`);
         }
     }
 
@@ -139,7 +151,7 @@ class ProjectService {
             return project;
         } catch (error) {
             await transaction.rollback();
-            throw createError(500, `Error marking project ${id} as completed`);
+            throw createError(500, `Error marking project as completed: ${error}`);
         }
     }
 
@@ -162,7 +174,7 @@ class ProjectService {
                 await project.save();
             }
         } catch (error) {
-            throw createError(500, 'Error handling project end dates');
+            throw createError(500, `Error handling project end dates: ${error}`);
         }
     }
 }
