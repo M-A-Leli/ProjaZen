@@ -96,7 +96,6 @@ User.init({
     },
     email: {
         type: DataTypes.STRING(100),
-        unique: true,
         allowNull: false,
     },
     password: {
@@ -110,6 +109,7 @@ User.init({
     role: {
         type: DataTypes.ENUM('admin', 'user'),
         allowNull: false,
+        defaultValue: 'user'
     },
 }, {
     sequelize,

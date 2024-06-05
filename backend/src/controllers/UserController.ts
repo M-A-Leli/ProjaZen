@@ -6,13 +6,23 @@ import logger from '../utils/Logger';
 import User from '../models/User';
 
 class UserController {
+    constructor() {
+        this.fetchAllUsers = this.fetchAllUsers.bind(this);
+        this.fetchUserById = this.fetchUserById.bind(this);
+        this.createUser = this.createUser.bind(this);
+        this.updateUser = this.updateUser.bind(this);
+        this.deleteUser = this.deleteUser.bind(this);
+        this.getUserProfile = this.getUserProfile.bind(this);
+        this.updateUserProfile = this.updateUserProfile.bind(this);
+    }
+
     async fetchAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
             const users = await UserService.getAllUsers();
             res.json(users.map(user => this.transformUser(user)));
         } catch (error) {
             logger.error('Error fetching all users:', error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -26,7 +36,7 @@ class UserController {
             res.json(this.transformUser(user));
         } catch (error) {
             logger.error(`Error fetching user by ID ${req.params.id}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -37,11 +47,16 @@ class UserController {
         }
 
         try {
+            const existingUser = await UserService.getUserByEmail(req.body.email);
+            if (existingUser) {
+                return next(createError(409, 'User already exists'));
+            }
+
             const newUser = await UserService.createUser(req.body);
             res.status(201).json(this.transformUser(newUser));
         } catch (error) {
             logger.error('Error creating user:', error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -60,7 +75,7 @@ class UserController {
             res.json(this.transformUser(updatedUser));
         } catch (error) {
             logger.error(`Error updating user by ID ${req.params.id}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -74,7 +89,7 @@ class UserController {
             res.status(204).send();
         } catch (error) {
             logger.error(`Error deleting user by ID ${req.params.id}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
     
@@ -88,7 +103,7 @@ class UserController {
             res.json(this.transformUser(user));
         } catch (error) {
             logger.error('Error fetching user profile:', error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -107,7 +122,7 @@ class UserController {
             res.json(this.transformUser(updatedUser));
         } catch (error) {
             logger.error(`Error updating user by ID ${req.params.id}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 

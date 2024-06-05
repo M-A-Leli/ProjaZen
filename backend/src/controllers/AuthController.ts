@@ -62,7 +62,7 @@ class AuthController {
             return res.redirect(`/${user.role}/dashboard`); //!
         } catch (error) {
             logger.error('Login error: ', error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -72,7 +72,7 @@ class AuthController {
             req.session.destroy((err: any) => {
                 if (err) {
                     logger.error('Error destroying session: ', err);
-                    return next(createError(500, 'Internal Server Error'));
+                    return next(err);
                 } else {
                     // Clear the access token cookie
                     res.clearCookie('accessToken');
@@ -83,7 +83,7 @@ class AuthController {
             });
         } catch (error) {
             logger.error('Logout error: ', error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 

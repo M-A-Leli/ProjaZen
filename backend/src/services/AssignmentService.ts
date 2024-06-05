@@ -7,6 +7,19 @@ import Notification from '../models/Notification';
 import NotificationService from './NotificationService';
 
 class AssignmentService {
+
+    async getAssignmentById(id: string) {
+        try {
+            const user = await Assignment.findByPk(id);
+            if (!user) {
+                throw createError(404, 'Assignment not found');
+            }
+            return user;
+        } catch (error) {
+            throw createError(500, `Error fetching Assignment by ID: ${error}`);
+        }
+    }
+
     async assignUserToProject(projectId: string, userId: string) {
         const transaction = await sequelize.transaction();
 
@@ -21,10 +34,15 @@ class AssignmentService {
                 throw createError(404, 'User not found');
             }
 
-            const existingAssignment = await Assignment.findOne({ where: { projectId, userId }, transaction });
-            if (existingAssignment) {
-                throw createError(400, 'User already assigned to the project');
+            const userUnavailable = await Assignment.findOne({ where: { userId }, transaction });
+            if (userUnavailable) {
+                throw createError(400, 'User already assigned to a project');
             }
+
+            // const existingAssignment = await Assignment.findOne({ where: { projectId, userId }, transaction });
+            // if (existingAssignment) {
+            //     throw createError(400, 'User already assigned to the project');
+            // }
 
             const newAssignment = await Assignment.create({ projectId, userId }, { transaction });
 
@@ -44,7 +62,7 @@ class AssignmentService {
             return newAssignment;
         } catch (error) {
             await transaction.rollback();
-            throw createError(500, 'Error assigning user to the project');
+            throw createError(500, `Error assigning user to the project: ${error}`);
         }
     }
 
@@ -76,7 +94,7 @@ class AssignmentService {
             return true;
         } catch (error) {
             await transaction.rollback();
-            throw createError(500, 'Error unassigning user from the project');
+            throw createError(500, `Error unassigning user from the project: ${error}`);
         }
     }
 }

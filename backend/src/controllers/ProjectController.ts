@@ -6,13 +6,24 @@ import logger from '../utils/Logger';
 import { Project } from '../models';
 
 class ProjectController {
+    constructor() {
+        this.fetchAllProjects = this.fetchAllProjects.bind(this);
+        this.fetchProjectById = this.fetchProjectById.bind(this);
+        this.createProject = this.createProject.bind(this);
+        this.updateProject = this.updateProject.bind(this);
+        this.deleteProject = this.deleteProject.bind(this);
+        this.getProjectsByStatus = this.getProjectsByStatus.bind(this);
+        this.changeProjectStatus = this.changeProjectStatus.bind(this);
+        this.markProjectAsCompleted = this.markProjectAsCompleted.bind(this);
+    }
+
     async fetchAllProjects(req: Request, res: Response, next: NextFunction) {
         try {
             const projects = await ProjectService.getAllProjects();
             res.json(projects.map(project => this.transformProject(project)));
         } catch (error) {
             logger.error('Error fetching all projects:', error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -26,7 +37,7 @@ class ProjectController {
             res.json(this.transformProject(project));
         } catch (error) {
             logger.error(`Error fetching project by ID ${req.params.id}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -37,11 +48,16 @@ class ProjectController {
         }
 
         try {
+            const existingProject = await ProjectService.getProjectsByName(req.body.name);
+            if (existingProject) {
+                return next(createError(409, 'Project already exists'));
+            }
+
             const newProject = await ProjectService.createProject(req.body);
             res.status(201).json(this.transformProject(newProject));
         } catch (error) {
             logger.error('Error creating project:', error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -60,7 +76,7 @@ class ProjectController {
             res.json(this.transformProject(updatedProject));
         } catch (error) {
             logger.error(`Error updating project by ID ${req.params.id}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -74,7 +90,7 @@ class ProjectController {
             res.status(204).send();
         } catch (error) {
             logger.error(`Error deleting project by ID ${req.params.id}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -85,7 +101,7 @@ class ProjectController {
             res.json(projects.map(project => this.transformProject(project)));
         } catch (error) {
             logger.error(`Error fetching ${req.params.status} projects:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -97,7 +113,7 @@ class ProjectController {
             res.json(this.transformProject(updatedProject));
         } catch (error) {
             logger.error(`Error changing project status for ${req.params.id}:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 
@@ -109,7 +125,7 @@ class ProjectController {
             res.json(this.transformProject(completedProject));
         } catch (error) {
             logger.error(`Error marking project ${id} as completed:`, error);
-            next(createError(500, 'Internal Server Error'));
+            next(error);
         }
     }
 

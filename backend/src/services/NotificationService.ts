@@ -7,7 +7,7 @@ class NotificationService {
             const notification = await Notification.create(notificationData);
             return notification;
         } catch (error) {
-            throw createError(500, 'Error creating notification');
+            throw createError(500, `Error creating notification: ${error}`);
         }
     }
 
@@ -16,7 +16,7 @@ class NotificationService {
             const notifications = await Notification.findAll({ where: {userId}});
             return notifications;
         } catch (error) {
-            throw createError(500, `Error fetching notifications for user ${userId}`);
+            throw createError(500, `Error fetching notifications for user: ${error}`);
         }
     }
 
@@ -25,7 +25,7 @@ class NotificationService {
             const unreadNotifications = await Notification.findAll({ where: { userId, read: false } });
             return unreadNotifications;
         } catch (error) {
-            throw createError(500, `Error fetching unread notifications for user ${userId}`);
+            throw createError(500, `Error fetching unread notifications for user: ${error}`);
         }
     }
 
@@ -39,7 +39,7 @@ class NotificationService {
             await notification.save();
             return notification;
         } catch (error) {
-            throw createError(500, `Error marking notification ${id} as read`);
+            throw createError(500, `Error marking notification as read: ${error}`);
         }
     }
 
@@ -52,7 +52,7 @@ class NotificationService {
             await notification.destroy();
             return true;
         } catch (error) {
-            throw createError(500, `Error deleting notification ${id}`);
+            throw createError(500, `Error deleting notification: ${error}`);
         }
     }
 }
