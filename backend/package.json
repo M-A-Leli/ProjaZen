@@ -1,13 +1,13 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server":"json-server db.json"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "express-validator": "^7.1.0",
+    "json-server": "^1.0.0-beta.1",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.9.7",
     "node-schedule": "^2.1.1",
@@ -41,5 +42,6 @@
     "ts-node-dev": "^2.0.0",
     "tsc-node": "^0.0.3",
     "typescript": "^5.4.5"
-  }
+  },
+  "description": ""
 }

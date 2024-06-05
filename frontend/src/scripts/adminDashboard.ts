@@ -1,11 +1,23 @@
 import '../styles/adminDashboard.css';
 
+// Interface for Project
+interface Project {
+    id: number;
+    name: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    status: string;
+}
+
+// Sample fake API URL
+const fakeApiUrl = 'http://localhost:3000/projects';
+
 // Select all sidebar items and sections
 const sidebarItems = document.querySelectorAll('.sidebar div');
 const sections = document.querySelectorAll('.section');
 const createProjectButton = document.querySelector('.create-project-button button') as HTMLButtonElement;
-const projectForm = document.querySelector('.project-form') as HTMLElement;
-const projectFormSubmitButton = document.querySelector('.project-form button[type="submit"]') as HTMLButtonElement;
+const projectForm = document.querySelector('.project-form') as HTMLFormElement;
 const container = document.querySelector('.container') as HTMLElement | null;
 const updateProjectButtons = document.querySelectorAll('#update-project-button') as NodeListOf<HTMLButtonElement>;
 const deleteProjectButtons = document.querySelectorAll('#delete-project-button') as NodeListOf<HTMLButtonElement>;
@@ -74,11 +86,72 @@ if (container) {
         showModal();
     });
 
-    // Hide the project creation form when the form is submitted
-    projectForm.addEventListener('submit', (event) => {
+    // Function to add project count to unassigned project card
+    function addProjectCountToUnassigned(count: number) {
+        const unassignedProjectCard = document.querySelector('.unassigned-project-card') as HTMLElement;
+        unassignedProjectCard.innerHTML = `<p>Unassigned Projects (${count})</p>`;
+    }
+
+    // Function to add project to unassigned project card
+    function addProjectToUnassigned(project: Project) {
+        const unassignedProjectCard = document.querySelector('.unassigned-project-card') as HTMLElement;
+        const existingCount = parseInt((unassignedProjectCard.textContent || '').match(/\d+/)?.[0] || '0', 10);
+        const newCount = existingCount + 1;
+        addProjectCountToUnassigned(newCount);
+    }
+
+    // Function to send project to fake API
+    async function sendProjectToApi(project: Project) {
+        try {
+            const response = await fetch(fakeApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(project)
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log('Project added to API:', data);
+        } catch (error) {
+            console.error('Failed to add project to API:', error);
+        }
+    }
+
+    // Modify the project form submit event listener to handle project creation
+    projectForm.addEventListener('submit', async (event) => {
         event.preventDefault(); // Prevent the form from actually submitting
+
+        // Get form data
+        const projectName = (document.getElementById('project-name') as HTMLInputElement).value;
+        const projectDescription = (document.querySelector('.project-form textarea') as HTMLTextAreaElement).value;
+        const startDate = (document.getElementById('start-date') as HTMLInputElement).value;
+        const endDate = (document.getElementById('end-date') as HTMLInputElement).value;
+
+        // Create a new project object
+        const newProject: Project = {
+            id: Date.now(), // Using timestamp as a simple unique ID
+            name: projectName,
+            description: projectDescription,
+            startDate: startDate,
+            endDate: endDate,
+            status: 'Unassigned'
+        };
+
+        // Add the new project to the unassigned project card
+        addProjectToUnassigned(newProject);
+
+        // Send the new project to the fake API
+        await sendProjectToApi(newProject);
+
+        // Hide the project creation form and modal
         projectForm.style.display = 'none';
         hideModal();
+
+        // Reset the form
+        projectForm.reset(); // No more error here
     });
 
     // Toggle the visibility of the update form when the "Update" button is clicked

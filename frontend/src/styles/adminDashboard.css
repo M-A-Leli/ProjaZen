@@ -141,7 +141,7 @@ body{
     gap: 50px;
     padding: 30px;
 }
-.project-card{
+#project-card{
     background-color: white;
     width: 200px;
     height: 150px;
@@ -277,6 +277,13 @@ table {
     padding: 30px;
     gap: 30px;
 }
+.assign-form {
+    margin-bottom: 20px;
+    margin-left: 50px;
+    padding: 20px;
+    background: linear-gradient(cadetblue,rgb(6, 91, 125));
+    text-align: center;
+}
 #notifications h1{
     font-size: 30px;
     font-weight: 300;
@@ -336,7 +343,3 @@ table {
 .logout-text button:hover {
     background-color: #054b6e;
 }
-
-
-
-
