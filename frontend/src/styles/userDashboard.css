@@ -4,4 +4,189 @@
     box-sizing: border-box;
 }
 
+.main{
+    overflow-x: hidden;
+    display: flex;
+}
+.sidebar{
+    background-color: rgb(63, 63, 236);
+    padding: 20px;
+    width: 20vw;
+    height: 100%;
+    
+}
+.projects, .register, .assigned, .logout{
+    display: flex;
+    gap: 20px;
+    padding: 40px;
+    color: white;
+    font-size: 20px;
+    font-weight: 400;
+    border-radius: 4px;
+}
+.projects:hover, .register:hover, .assigned:hover, .logout:hover{
+    background-color: white;
+    color: rgb(145, 131, 131);
+    cursor: pointer;
+}
+.container{
+    padding: 40px;
+    background-color: rgb(217, 234, 248);
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: scroll;
+    width: 100vw;
+}
+.topbar{
+    display: flex;
+    justify-content: flex-end;
+    background-color: white;
+    border-radius: 5px;
+    width: 67vw;
+    height: 9vh;
+}
+.topbar1{
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 50px;
+    padding: 5px;
+    width: 50vw;
+    height: 9vh;
+}
+.notifications{
+    display: flex;
+    gap: 20px;
+    width: 10vw;
+}
+.userimage{
+    display: flex;
+    align-items: center;
+}
+.styleimagetopbar1{
+    height: 7vh;
+}
+#projects{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    gap: 30px;
+    height: auto;
+}
+.welcome{
+    display: flex;
+    gap: 20px;
+    background-color: white;
+    border-radius: 5px;
+    height: 45vh;
+    width: 67vw;
+    margin-top: 40px;
+}
+.welcome-image {
+    height: 45vh;
+    width: 30vw;
+    background-image: url(https://images.pexels.com/photos/4443153/pexels-photo-4443153.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
+    background-size: cover;
+}
+.welcome-text{
+    font-size: 20px;
+    font-weight: 300;
+    padding: 10px;
+}
+.welcome-text p{
+    padding: 10px;
+}
+.projects-block{
+    padding: 30px;
+}
+
+.project-form form{
+    border-radius: 5px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background:white;
+    text-align: center;
+    width: 65vw;
+}
+.project-form label{
+    font-size: 20px;
+    font-weight: 300;
+}
+.project-form input, .project-form textarea {
+    padding: 8px;
+    width: 70%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.project-form button{
+    background: linear-gradient(aliceblue,skyblue);
+    padding: 12px;
+    font-size: 12px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0px 0px 10px 5px rgba(251, 224, 224, 0.5);
+    align-self: center;
+}
+.project-form button:hover{
+    cursor: pointer;
+}
+.projects-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    padding: 30px;
+}
+.project-card{
+    background-color: white;
+    width: 200px;
+    height: 150px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 5px rgb(6, 91, 125);
+    transition: transform 0.3s;
+}
+.project-card:hover{
+    transform: translateY(-10px);
+}
+.text{
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+}
+.projects-table{
+    margin-top: 20px;
+    width: 67vw;
+    background-color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 60vw;
+    height: fit-content;
+}
+  
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+  
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+td > button{
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: cadetblue;
+    color: white;
+}
+td > button:hover{
+    cursor: pointer;
+}
 
