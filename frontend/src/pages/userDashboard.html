@@ -8,131 +8,101 @@
 </head>
 <body>
     <div class="main">
-       
-       
         <div class="container1">
-              
-           <div class="sidebar">
-                   <div class="projects" id="nav-projects">
-                       <ion-icon name="albums-outline"></ion-icon>
-                       <p>Projects</p>
-                   </div>
-                   <hr>
-               
-                   <div class="logout">
-                       <ion-icon name="log-out-outline"></ion-icon>
-                       <p>Log Out</p>
-                   </div>
-           
-               </div>
-           </div>
-           
-          
-          
-           <div class="container">
-   
-               <div class="topbar">
-                    <div class="topbar1">
-                       <div class="notifications">
-                        <button class="button" style="background-color: white; border: none"><ion-icon name="mail-outline" style="color:rgb(63, 63, 236); font-size: 50px;"></ion-icon></button>
-                           <button class="button" style="background-color: white; border: none"><ion-icon name="notifications-outline" style="color:  rgb(63, 63, 236); margin-left: 10px; font-size: 50px;"></ion-icon></button>
-   
-                       </div>
-                        <div class="userimage">
-                           <img src="https://img.freepik.com/premium-photo/male-female-profile-avatar-user-avatars-gender-icons_1020867-75477.jpg?w=740" alt="" class="styleimagetopbar1">
-                           <select name="dropdown" id="dropdown">
-                               <option value="0">User</option>
-                               <option value="Profile">Profile</option>
-                               <option value="Help">Help</option>
-                               <option value="Setting">Setting</option>
-                                </select>
-                          </div>
-                     
-   
-   
-                    </div> 
-   
-               </div>
-               <section id="projects" class="section">
-                   <div class="welcome">
-                       <div class="welcome-image">
-                       </div>
-                       <div class="welcome-text">
-                           <p style="font-weight: 900;">Welcome Back!</p>
-                           <p style="color: blue; font-size: 30px; font-weight: 900;">User Name</p>
-                           <p>Ready to conquer your goals?<br>Your success starts here. Let's make today productive</p>
-                       </div>
-                   </div>
-                   <div class="projects-block">
-                       
-                       <div class="project-form" style="display: none;">
-                           <form>
-                             <label for="">Project Name</label>
-                             <br>
-                             <input type="text" id="project-name">
-                             <br><br>
-                             <label for="">Description</label>
-                             <br>
-                             <textarea></textarea>
-                             <br><br>
-                             <label for="">Start Date</label>
-                             <br>
-                             <input type="date" id="start-date">
-                             <br><br>
-                             <label for="">End Date</label>
-                             <br>
-                             <input type="date" id="end-date">
-                             <br><br>
-                             <button type="submit">Register Project</button>
-                             <br><br>
-                           </form>
-                       </div>
-
-
-                       <div class="projects-list">
-                          
-                           <div class="project-card">
-                               <div class="text">
-                                   <h1>Assigned</h1>
-                                   <p></p>
-                               </div>
-                           </div>
-                           <div class="project-card">
-                               <div class="text">
-                                   <h1>Completed</h1>
-                                   <p></p>
-                               </div>
-                           </div>
-                         
-                        
-                       </div>
-                   </div>
-
-                   <div class="projects-table">
-                       <table>
-                           <tr>
-                               <th>Project Name</th>
-                               <th>Description</th>
-                               <th>Start Date</th>
-                               <th>End Date</th>
-                               <th>Status</th>
-                           </tr>
-                           
-                           <tr>
-                               <td>Project Manager</td>
-                               <td>admin, user and projects management</td>
-                               <td>1st June</td>
-                               <td>6th June</td>
-                               <td>Pending</td>
-                            </td>
-                           </tr>
-                       </table>
-                       
-               </section>
-              
-          
-           </div>
-       </div>
+            <div class="sidebar">
+                <div class="projects" id="nav-projects">
+                    <ion-icon name="albums-outline"></ion-icon>
+                    <p>Projects</p>
+                </div>
+                <hr>
+                <div class="register" id="nav-register">
+                    <ion-icon name="log-in-outline"></ion-icon>
+                    <p>Register</p>
+                </div>
+                <hr>
+                <div class="assigned" id="nav-assigned">
+                    <ion-icon name="hourglass-outline"></ion-icon>
+                    <p>assigned</p>
+                </div>
+                <hr>
+                <div class="logout">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                    <p>Log Out</p>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="topbar">
+                <div class="topbar1">
+                    <div class="notifications">
+                        <button class="button" style="background-color: white; border: none">
+                            <ion-icon name="mail-outline" style="color:rgb(63, 63, 236); font-size: 50px;"></ion-icon>
+                        </button>
+                        <button class="button" style="background-color: white; border: none">
+                            <ion-icon name="notifications-outline" style="color: rgb(63, 63, 236); margin-left: 10px; font-size: 50px;"></ion-icon>
+                        </button>
+                    </div>
+                    <div class="userimage">
+                        <img src="https://img.freepik.com/premium-photo/male-female-profile-avatar-user-avatars-gender-icons_1020867-75477.jpg?w=740" alt="" class="styleimagetopbar1">
+                        <select name="dropdown" id="dropdown">
+                            <option value="0">User</option>
+                            <option value="Profile">Profile</option>
+                            <option value="Help">Help</option>
+                            <option value="Setting">Setting</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <section id="content-section" class="section">
+                <div class="welcome">
+                    <div class="welcome-image"></div>
+                    <div class="welcome-text">
+                        <p style="font-weight: 900;">Welcome Back!</p>
+                        <p style="color: blue; font-size: 30px; font-weight: 900;">User Name</p>
+                        <p>Ready to conquer your goals?<br>Your success starts here. Let's make today productive</p>
+                    </div>
+                </div>
+                <div class="projects-block">
+                    <div class="project-form">
+                        <form id="project-form">
+                            <label for="project-name">Project Name</label>
+                            <br>
+                            <input type="text" id="project-name" required>
+                            <br><br>
+                            <label for="project-description">Description</label>
+                            <br>
+                            <textarea id="project-description" required></textarea>
+                            <br><br>
+                            <label for="start-date">Start Date</label>
+                            <br>
+                            <input type="date" id="start-date" required>
+                            <br><br>
+                            <label for="end-date">End Date</label>
+                            <br>
+                            <input type="date" id="end-date" required>
+                            <br><br>
+                            <button type="submit">Register Project</button>
+                            <br><br>
+                        </form>
+                    </div>
+                </div>
+                <div class="projects-table" style="display: none;">
+                    <table id="projects-table">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Description</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
        
        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
