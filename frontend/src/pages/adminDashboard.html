@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProjaZen || Dashboard</title>
 </head>
+
 <body>
     <div class="sidebar">
 
-        <div class="admin" >
+        <div class="admin">
             <ion-icon name="person-circle-outline"></ion-icon>
             <p>Admin</p>
         </div>
@@ -26,7 +28,7 @@
             <ion-icon name="notifications-circle-outline"></ion-icon>
             <p>Notifications</p>
         </div>
-        <div class="logout">
+        <div class="logout" id="nav-logout">
             <ion-icon name="log-out-outline"></ion-icon>
             <p>Log Out</p>
         </div>
@@ -36,7 +38,7 @@
         <section id="projects" class="section">
             <div class="welcome">
                 <div class="welcome-image">
-                    <img src="../images/welcome-image.avif" alt="welcome-image">
+                    <img src="/welcome-image.avif" alt="welcome-image">
                 </div>
                 <div class="welcome-text">
                     <p style="font-weight: 900;">Welcome Back!</p>
@@ -52,24 +54,24 @@
                 </div>
                 <div class="project-form">
                     <form>
-                      <label for="">Project Name</label>
-                      <br>
-                      <input type="text" id="project-name">
-                      <br><br>
-                      <label for="">Description</label>
-                      <br>
-                      <textarea></textarea>
-                      <br><br>
-                      <label for="">Start Date</label>
-                      <br>
-                      <input type="date" id="start-date">
-                      <br><br>
-                      <label for="">End Date</label>
-                      <br>
-                      <input type="date" id="end-date">
-                      <br><br>
-                      <button type="submit">Create Project</button>
-                      <br><br>
+                        <label for="">Project Name</label>
+                        <br>
+                        <input type="text" id="project-name">
+                        <br><br>
+                        <label for="">Description</label>
+                        <br>
+                        <textarea></textarea>
+                        <br><br>
+                        <label for="">Start Date</label>
+                        <br>
+                        <input type="date" id="start-date">
+                        <br><br>
+                        <label for="">End Date</label>
+                        <br>
+                        <input type="date" id="end-date">
+                        <br><br>
+                        <button type="submit">Create Project</button>
+                        <br><br>
                     </form>
                 </div>
                 <div class="projects-list">
@@ -160,35 +162,170 @@
                         <input type="text" id="assigned-to">
                         <br><br>
                         <button type="submit">Update</button>
-                      </form>
+                    </form>
                 </div>
                 <div class="delete-project">
-                    
+                    <p>Do you want to delete project?</p>
+                    <br><br>
+                    <div class="yes-no-buttons">
+                        <button id="yes">Yes</button>
+                        <button id="no">Cancel</button>
+                    </div>
                 </div>
             </div>
         </section>
         <section id="users" class="section" style="display: none;">
-            <div class="all-registered-users">
-                <h1>users</h1>
+            <h1>User Management</h1>
+            <hr>
+            <div class="user-buttons">
+                <button>All Registered Users</button>
+                <button>Assigned</button>
+                <button>Unassigned</button>
+            </div>
+            <div class="registered-users">
+                <table>
+                    <tr>
+                        <th>id</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Carolyne</td>
+                        <td>Musenya</td>
+                        <td>carolmartoz@gmail.com</td>
+                        <td>Tokyo@2023</td>
+                        <td>
+                            <ion-icon name="trash-outline" style="color: red;"></ion-icon>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Glen</td>
+                        <td>Ijatia</td>
+                        <td>glen@gmail.com</td>
+                        <td>Japan@2023</td>
+                        <td>
+                            <ion-icon name="trash-outline" style="color: red;"></ion-icon>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Alvin</td>
+                        <td>Leli</td>
+                        <td>alvin@yopmail.com</td>
+                        <td>Paris@2023</td>
+                        <td>
+                            <ion-icon name="trash-outline" style="color: red;"></ion-icon>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Erick</td>
+                        <td>Muriugi</td>
+                        <td>erick@yopmail.com</td>
+                        <td>London@2023</td>
+                        <td>
+                            <ion-icon name="trash-outline" style="color: red;"></ion-icon>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="assigned-users">
+                <table>
+                    <tr>
+                        <th>id</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Assigned-to</th>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Glen</td>
+                        <td>Ijatia</td>
+                        <td>glen@gmail.com</td>
+                        <td>Japan@2023</td>
+                        <td>User Dashboard</td>
+
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Alvin</td>
+                        <td>Leli</td>
+                        <td>alvin@yopmail.com</td>
+                        <td>Paris@2023</td>
+                        <td>Login Form</td>
+
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Erick</td>
+                        <td>Muriugi</td>
+                        <td>erick@yopmail.com</td>
+                        <td>London@2023</td>
+                        <td>Register Form</td>
+
+                    </tr>
+                </table>
+            </div>
+            <div class="unassigned-users">
+                <table>
+                    <tr>
+                        <th>id</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Carolyne</td>
+                        <td>Musenya</td>
+                        <td>carolmartoz@gmail.com</td>
+                        <td>Tokyo@2023</td>
+                        <td>
+                            <button style="background-color: cornflowerblue; color: white;">Assign Project</button>
+                        </td>
+
+                    </tr>
+                </table>
             </div>
 
         </section>
         <section id="notifications" class="section" style="display: none;">
-
+            <button>Sent</button>
+            <button>Received</button>
         </section>
         <section id="logout" class="section" style="display: none;">
             <div class="logout-container">
-                <h2>Logout</h2>
-                <form action="/logout" method="POST">
-                    <p>Are you sure you want to logout?</p>
-                    <button type="submit">Logout</button>
-                </form>
+                <div class="logout-image">
+                    <img src="/logout-image.avif" alt="logout-image">
+                </div>
+                <div class="logout-text">
+                    <h2>Logout</h2>
+                    <form action="/logout" method="POST">
+                        <p>Are you sure you want to logout?</p>
+                        <button type="submit">Logout</button>
+                        <button>Cancel</button>
+                    </form>
+                </div>
             </div>
         </section>
     </div>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    
+
     <script type="module" src="../scripts/adminDashboard.ts"></script>
 </body>
+
 </html>
