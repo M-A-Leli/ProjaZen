@@ -10,6 +10,7 @@ async function checkBackend() {
                 const data = await response.json();
                 document.getElementById('backend-status')!.textContent = data.message;
                 document.getElementById('frontend-status')!.textContent = "The frontend couldn't be any happier!!!";
+                document.getElementById('attempts')!.textContent = '';
             } else {
                 document.getElementById('backend-status')!.textContent = 'Backend could not be reached.';
                 document.getElementById('frontend-status')!.textContent = 'The frontend is worried!!! ...';
