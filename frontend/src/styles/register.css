@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     height: 100vh;
-    background: url('../images/register-page-img.png') no-repeat center center;
+    background: url('/register-page-img.png') no-repeat center center;
     background-size: contain;
     background-position: left;
     display: flex;
@@ -31,15 +31,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f4f5f7;
+    background-color: rgb(255, 255, 255);
 }
 
 .register-box {
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 350px;
 }
 
 .register-box h5 {
@@ -55,7 +55,8 @@ body {
 .form-group label {
     display: block;
     margin-bottom: 5px;
-    font-size:16px;
+    font-size:18px;
+    font-weight:900;
 }
 
 .form-group input {
