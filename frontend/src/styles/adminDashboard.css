@@ -227,7 +227,7 @@ table {
     cursor: pointer;
 }
 .delete-project{
-    background: linear-gradient(aliceblue,skyblue);
+    background: linear-gradient (cadetblue,rgb(6, 91, 125));
     padding: 12px;
     font-size: 12px;
     border-radius: 12px;
@@ -275,6 +275,21 @@ table {
     display: flex;
     flex-direction: row;
     padding: 30px;
+    gap: 30px;
+}
+#notifications h1{
+    font-size: 30px;
+    font-weight: 300;
+}
+#notifications button{
+    background-color: cornflowerblue;
+    color: white;
+    padding: 12px;
+    border-radius: 5px;
+    border: none;
+}
+.notifications-buttons{
+    display: flex;
     gap: 30px;
 }
 #logout{
