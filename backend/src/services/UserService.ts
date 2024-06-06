@@ -26,6 +26,12 @@ class UserService {
 
     async createUser(userData: any) {
         try {
+            const existingUser = await User.findOne({ where: { email: userData.email } });
+            
+            if (existingUser) {
+                throw createError(409, 'Email already exists');
+            }
+    
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(userData.password, salt);
 

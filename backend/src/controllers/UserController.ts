@@ -47,11 +47,6 @@ class UserController {
         }
 
         try {
-            const existingUser = await UserService.getUserByEmail(req.body.email);
-            if (existingUser) {
-                return next(createError(409, 'User already exists'));
-            }
-
             const newUser = await UserService.createUser(req.body);
             res.status(201).json(this.transformUser(newUser));
         } catch (error) {

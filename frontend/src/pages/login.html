@@ -19,20 +19,20 @@
                 <img src="/login-page-img.png" alt="login page image">
             </div>
             <div class="login-container">
-                <form action="">
+                <form action="" id="login-form">
                     <div class="heading input-group">
                         <h2>login to ProjaZen</h2>
                     </div>
                     <div class="input-group">
-                        <label for="">email *</label>
-                        <input type="email" placeholder="example@email.com" autocomplete="off">
-                        <p id="email-error"></p>
+                        <label for="email">email *</label>
+                        <input type="email" name="email" id="email" placeholder="example@email.com" autocomplete="off">
                     </div>
+                    <p id="email-error"></p>
                     <div class="input-group">
-                        <label for="">password *</label>
-                        <input type="password" placeholder="********" autocomplete="off">
-                        <p id="password-error"></p>
+                        <label for="password">password *</label>
+                        <input type="password" name="password" id="password" placeholder="********" autocomplete="off">
                     </div>
+                    <p id="password-error"></p>
                     <div class="input-group">
                         <div class="remember-me">
                             <input type="checkbox" name="" id="">
@@ -40,8 +40,10 @@
                         </div>
                         <a href="#">forgot password?</a>
                     </div>
+                    <div id="error-container" class="error-container input-group">
+                    </div>
                     <div class="input-group buttons">
-                        <button id="login-btn">sign in</button>
+                        <button type="submit" id="login-btn">sign in</button>
                         <h2>or</h2>
                         <button id="register-btn">register to create account</button>
                     </div>

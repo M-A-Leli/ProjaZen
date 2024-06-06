@@ -5,7 +5,8 @@ import { validateLoginInput } from '../middleware/InputValidation';
 
 const router = Router();
 
-router.post('/login', validateLoginInput, AuthController.login);
+router.post('/login', AuthController.login);
+// router.post('/login', validateLoginInput, AuthController.login);
 
 router.post('/logout', authenticateToken, AuthController.logout); //!
 
