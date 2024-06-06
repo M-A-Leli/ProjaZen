@@ -75,35 +75,20 @@
                     </form>
                 </div>
                 <div class="projects-list">
-                    <div class="project-card">
-                        <div class="text">
-                            <h1>12</h1>
-                            <p>Unassigned</p>
-                        </div>
+                    <div id="project-card" class="unassigned-project-card">
+
                     </div>
-                    <div class="project-card">
-                        <div class="text">
-                            <h1>12</h1>
-                            <p>Assigned</p>
-                        </div>
+                    <div id="project-card" class="assigned-project-card">
+
                     </div>
-                    <div class="project-card">
-                        <div class="text">
-                            <h1>12</h1>
-                            <p>Completed</p>
-                        </div>
+                    <div id="project-card" class="completed-project-card">
+
                     </div>
-                    <div class="project-card">
-                        <div class="text">
-                            <h1>12</h1>
-                            <p>Expired</p>
-                        </div>
+                    <div id="project-card" class="expired-project-card">
+
                     </div>
-                    <div class="project-card">
-                        <div class="text">
-                            <h1>12</h1>
-                            <p>Over due</p>
-                        </div>
+                    <div id="project-card" class="overdue-project-card">
+
                     </div>
                 </div>
             </div>
@@ -299,6 +284,27 @@
 
                     </tr>
                 </table>
+
+                <form class="assign-form">
+                    <label for="">Project Name</label>
+                    <br>
+                    <input type="text" id="project-name">
+                    <br><br>
+                    <label for="">Description</label>
+                    <br>
+                    <textarea></textarea>
+                    <br><br>
+                    <label for="">Start Date</label>
+                    <br>
+                    <input type="date" id="start-date">
+                    <br><br>
+                    <label for="">End Date</label>
+                    <br>
+                    <input type="date" id="end-date">
+                    <br><br>
+                    <button type="submit">Assign</button>
+                </form>
+
             </div>
 
         </section>
