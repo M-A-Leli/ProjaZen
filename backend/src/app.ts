@@ -4,8 +4,8 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import routes from './routes';
-import { authorizeAdmin, authorizeUser } from './middleware/Authorization';
-import errorHandler from './middleware/ErrorHandler'
+import { authenticateToken, authorizeAdmin, authorizeUser } from './middleware/Authorization';
+import errorHandler from './middleware/ErrorHandler';
 
 // Create Express app
 const app = express();
@@ -32,54 +32,41 @@ app.use(
 app.use('/api/v1', routes);
 
 app.use('/api/hello', (req, res) => {
-    res.json({message: "Hello from backend!"});
+    res.json({ message: "Hello from backend!" });
 });
 
-if (process.env.NODE_ENV === 'development') {
-    // Serve static files from the frontend's src directory
-    app.use(express.static(path.join(__dirname, '../../frontend/src')));
-}
-
-if (process.env.NODE_ENV === 'production') {
-    // Serve static files from the frontend's dist directory
-    app.use(express.static(path.join(__dirname, '../../frontend/dist')));
-}
+// Serve static files from the frontend's dist directory
+app.use(express.static(path.join(__dirname, '../../frontend/dist/')));
 
 // Root page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/index.html'));
+    res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 
 // login page
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, '/pages/Login.html'));
+    res.sendFile(path.join(__dirname, '../../frontend/dist/src/pages/login.html'));
 });
 
 // register page
 app.get('/register', (req, res) => {
-    res.sendFile(path.join(__dirname, '/pages/Register.html'));
+    res.sendFile(path.join(__dirname, '../../frontend/dist/src/pages/register.html'));
 });
 
 // Admin dashboard
-app.get('/admin/dashboard', authorizeAdmin, (req, res) => {
-    res.sendFile(path.join(__dirname, '/pages/DashboardAdmin.html'));
+app.get('/admin/dashboard', authenticateToken, authorizeAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/dist/src/pages/adminDashboard.html'));
 });
 
 // User dashboard
-app.get('/user/dashboard', authorizeUser, (req, res) => {
-    res.sendFile(path.join(__dirname, '/pages/DashboardUser.html'));
+app.get('/user/dashboard', authenticateToken, authorizeUser, (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/dist/src/pages/userDashboard.html'));
 });
 
 // Handle SPA routing, serve index.html for all other routes
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '/index.html'));
+    res.sendFile(path.join(__dirname, '../../frontend/dist/src/index.html'));
 });
-
-// !
-// Handle other routes or show an error page
-// app.get('*', (req, res) => {
-//     res.status(404).sendFile(path.join(__dirname, 'pages/Error.html'));
-// });
 
 // Error handler middleware
 app.use(errorHandler);

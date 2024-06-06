@@ -7,7 +7,7 @@ class RegisterFormHandler {
         document.addEventListener("DOMContentLoaded", () => {
             this.form = document.getElementById('register-form') as HTMLFormElement;
             this.initializeEventListeners();
-            console.log(this.validatePassword("Aa1@aaaa"));
+            // console.log(this.validatePassword("Aa1@aaaa"));
         });
     }
 
@@ -35,7 +35,7 @@ class RegisterFormHandler {
                 alert(response.message);
 
                 // Redirect to the login page upon successful registration
-                window.location.href = '../pages/login.html';
+                window.location.href = '/login';
             } catch (error) {
                 if (error instanceof Error) {
                     alert(error.message);

@@ -1,166 +1,97 @@
 import '../styles/login.css';
 
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('login-form') as HTMLFormElement;
-    const errorContainer = document.getElementById('errorContainer') as HTMLDivElement;
+class LoginForm {
+    private emailInput: HTMLInputElement;
+    private passwordInput: HTMLInputElement;
+    private emailError: HTMLParagraphElement;
+    private passwordError: HTMLParagraphElement;
+    private errorContainer: HTMLDivElement;
 
-    const emailError = document.getElementById('email-error') as HTMLParagraphElement;
-    const passwordError = document.getElementById('password-error') as HTMLParagraphElement;
+    constructor() {
+        this.emailInput = document.getElementById("email") as HTMLInputElement;
+        this.passwordInput = document.getElementById("password") as HTMLInputElement;
+        this.emailError = document.getElementById("email-error") as HTMLParagraphElement;
+        this.passwordError = document.getElementById("password-error") as HTMLParagraphElement;
+        this.errorContainer = document.getElementById("error-container") as HTMLDivElement;
+        this.addEventListeners();
+    }
 
-    form.addEventListener('submit', async (event) => {
+    private addEventListeners() {
+        const loginForm = document.getElementById("login-form") as HTMLFormElement;
+        loginForm.addEventListener("submit", this.handleSubmit.bind(this));
+    }
+
+    private async handleSubmit(event: Event) {
         event.preventDefault();
 
-        const email = (document.getElementById('email') as HTMLInputElement).value;
-        const password = (document.getElementById('password') as HTMLInputElement).value;
+        this.clearErrors();
 
-        let validationPassed = true;
+        const email = this.emailInput.value;
+        const password = this.passwordInput.value;
 
-        // Clear previous validation error messages
-        emailError.textContent = '';
-        passwordError.textContent = '';
-        errorContainer.textContent = '';
-
-        // Validate email format
-        if (!validateEmail(email)) {
-            emailError.textContent = 'Invalid email address';
-            validationPassed = false;
-            clearErrorsAfterDelay();
+        if (!this.validateEmail(email)) {
+            this.displayError(this.emailError, "Invalid email address.");
+            return;
         }
 
-        // Validate password format
-        if (!validatePassword(password)) {
-            passwordError.textContent = 'Password must be at least 8 characters long and contain a mixture of numbers, letters, and special characters';
-            validationPassed = false;
-            clearErrorsAfterDelay();
+        if (!this.validatePassword(password)) {
+            this.displayError(this.passwordError, "Invalid password. It must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be between 8 and 16 characters.");
+            return;
         }
 
-        if (!validationPassed) return;
-
-        // If all validations pass, send data to API endpoint
         try {
-            await sendLoginData(email, password);
-        } catch (error) {
-            if (error instanceof Error) {
-                errorContainer.textContent = error.message;
-            } else {
-                errorContainer.textContent = 'An unknown error occurred';
-            }
-            clearErrorsAfterDelay();
-        }
-    });
+            console.log("executed up");
+            const response = await fetch("/api/v1/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            });
 
-    function validateEmail(email: string): boolean {
-        // Basic email format validation using regular expression
+            console.log("executed down");
+            console.log(response);
+
+            if (!response.ok) {
+                throw new Error("An error occurred during login.");
+            }
+
+            const data = await response.json();
+            const { token, redirectUrl } = data;
+
+            // Save token and userid to localStorage or sessionStorage
+            localStorage.setItem('token', token);
+
+            // Redirect to the appropriate dashboard
+            window.location.href = redirectUrl;
+        } catch (error) {
+            // Display a generic error message to the user
+            this.displayError(this.errorContainer, "An unexpected error occurred. Please try again later.");
+        }
+    }
+
+    private clearErrors() {
+        this.emailError.textContent = "";
+        this.passwordError.textContent = "";
+        this.errorContainer.textContent = "";
+    }
+
+    private displayError(element: HTMLElement, message: string) {
+        element.textContent = message;
+    }
+
+    private validateEmail(email: string): boolean {
+        // Simple email validation regex
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
-    function validatePassword(password: string): boolean {
-        // Password validation: at least 8 characters long and contains a mixture of numbers, letters, and special characters
-        const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+    private validatePassword(password: string): boolean {
+        // Password validation regex
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,16}$/;
         return passwordRegex.test(password);
     }
+}
 
-    async function sendLoginData(email: string, password: string): Promise<void> {
-        const apiUrl = 'http://localhost:3000/api/v1/auth/login';
-        const requestData = {
-            email,
-            password
-        };
-
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData)
-            });
-
-            if (!response.ok) {
-                // Handle server-side errors
-                const errorData = await response.json();
-                if (errorData && errorData.errors) {
-                    // If errors are present, display them
-                    displayErrors(errorData.errors);
-                } else if (errorData) {
-                    // If not an array of errors objects
-                    throw new Error(errorData.error);
-                } else {
-                    // If no specific errors provided, display generic error message
-                    throw new Error('Failed to login');
-                }
-            } else {
-                // Clear input fields
-                resetFields();
-
-                // Clear any previous error messages
-                errorContainer.textContent = '';
-
-                const responseData = await response.json();
-                const { token, userId } = responseData;
-
-                // Check if response contains an access token
-                if (!token) {
-                    throw new Error('Access token not found');
-                }
-
-                // Save token and userid to localStorage or sessionStorage
-                localStorage.setItem('token', token);
-                localStorage.setItem('userId', userId);
-
-                //! Redirect to dashboard after successful login
-                window.location.href = '../pages/dashboard.html';
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                throw error;
-            } else {
-                throw new Error('An unknown error occurred');
-            }
-        }
-    }
-
-    // Function to display errors
-    function displayErrors(errors: { msg: string }[]): void {
-        // Clear previous error messages
-        errorContainer.innerHTML = '';
-
-        // Create an unordered list to display errors
-        const errorList = document.createElement('ul');
-
-        // Iterate over the array of errors
-        errors.forEach(error => {
-            // Extract the "msg" value from each error object
-            const errorMessageText = error.msg;
-
-            // Create list item for each error message
-            const listItem = document.createElement('li');
-            listItem.textContent = errorMessageText;
-
-            // Append list item to the unordered list
-            errorList.appendChild(listItem);
-        });
-
-        // Append the unordered list to the error container
-        errorContainer.appendChild(errorList);
-    }
-
-    function resetFields(): void {
-        const emailField = document.getElementById('email') as HTMLInputElement;
-        const passwordField = document.getElementById('password') as HTMLInputElement;
-
-        emailField.value = '';
-        passwordField.value = '';
-    }
-
-    function clearErrorsAfterDelay() {
-        setTimeout(() => {
-            emailError.textContent = '';
-            passwordError.textContent = '';
-            errorContainer.textContent = '';
-        }, 3000);
-    }
-    
-});
-
+// Instantiate the form object
+new LoginForm();
