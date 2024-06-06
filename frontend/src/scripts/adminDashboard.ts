@@ -11,7 +11,7 @@ interface Project {
 }
 
 // Sample fake API URL
-const fakeApiUrl = 'http://localhost:3000/projects';
+const fakeApiUrl = 'http://localhost:3000/api/v1/projects/';
 
 // Select all sidebar items and sections
 const sidebarItems = document.querySelectorAll('.sidebar div');
@@ -114,24 +114,28 @@ if (container) {
         });
     }
 
+    // Function to count projects by status
+    function countProjectsByStatus(projects: Project[], status: string): number {
+        return projects.filter(project => project.status === status).length;
+    }
+
+    // Function to update project counts in the HTML
+    function updateProjectCounts(projects: Project[]) {
+        const statuses = ['unassigned', 'assigned', 'completed', 'expired', 'overdue'];
+        statuses.forEach(status => {
+            const count = countProjectsByStatus(projects, status);
+            const countElement = document.getElementById(`${status}-project-count`);
+            if (countElement) {
+                countElement.textContent = count.toString();
+            }
+        });
+    }
+
     // Fetch projects from the API and display them in the projects table
     fetchProjectsFromApi().then(projects => {
         displayProjects(projects);
+        updateProjectCounts(projects); // Update the project counts
     });
-
-    // Function to add project count to unassigned project card
-    function addProjectCountToUnassigned(count: number) {
-        const unassignedProjectCard = document.querySelector('.unassigned-project-card') as HTMLElement;
-        unassignedProjectCard.innerHTML = `<p>Unassigned Projects (${count})</p>`;
-    }
-
-    // Function to add project to unassigned project card
-    function addProjectToUnassigned(project: Project) {
-        const unassignedProjectCard = document.querySelector('.unassigned-project-card') as HTMLElement;
-        const existingCount = parseInt((unassignedProjectCard.textContent || '').match(/\d+/)?.[0] || '0', 10);
-        const newCount = existingCount + 1;
-        addProjectCountToUnassigned(newCount);
-    }
 
     // Function to send project to fake API
     async function sendProjectToApi(project: Project) {
@@ -173,11 +177,13 @@ if (container) {
             status: 'Unassigned'
         };
 
-        // Add the new project to the unassigned project card
-        addProjectToUnassigned(newProject);
-
         // Send the new project to the fake API
         await sendProjectToApi(newProject);
+
+        fetchProjectsFromApi().then(projects => {
+            displayProjects(projects);
+            updateProjectCounts(projects); // Update the project counts
+        });
 
         // Hide the project creation form and modal
         projectForm.style.display = 'none';

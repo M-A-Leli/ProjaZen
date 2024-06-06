@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import createError from 'http-errors';
 import NotificationService from '../services/NotificationService';
 import Notification from '../models/Notification';
-import logger from '../utils/Logger';
 
 class NotificationController {
     constructor() {
@@ -24,7 +22,6 @@ class NotificationController {
             const newNotification = await NotificationService.createNotification(req.body);
             res.status(201).json(this.transformNotification(newNotification));
         } catch (error) {
-            logger.error('Error creating notification:', error);
             next(error);
         }
     }
@@ -36,7 +33,6 @@ class NotificationController {
             const notifications = await NotificationService.getNotificationsByUserId(userId);
             res.json(notifications.map(notification => this.transformNotification(notification)));
         } catch (error) {
-            logger.error(`Error fetching notifications for user ${userId}:`, error);
             next(error);
         }
     }
@@ -49,7 +45,6 @@ class NotificationController {
             const count = unreadNotifications.length;
             res.json({count, notifications: unreadNotifications.map((unreadNotification: Notification) => this.transformNotification(unreadNotification))});
         } catch (error) {
-            logger.error(`Error fetching unread notifications for user ${userId}:`, error);
             next(error);
         }
     }
@@ -61,7 +56,6 @@ class NotificationController {
             const notification = await NotificationService.markNotificationAsRead(id);
             res.json(this.transformNotification(notification));
         } catch (error) {
-            logger.error(`Error marking notification ${id} as read:`, error);
             next(error);
         }
     }
@@ -73,7 +67,6 @@ class NotificationController {
             const result = await NotificationService.deleteNotification(id);
             res.status(204).json({ success: result });
         } catch (error) {
-            logger.error(`Error deleting notification ${id}:`, error);
             next(error);
         }
     }

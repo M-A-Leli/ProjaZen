@@ -16,7 +16,13 @@ class AssignmentService {
             }
             return user;
         } catch (error) {
-            throw createError(500, `Error fetching Assignment by ID: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -62,7 +68,13 @@ class AssignmentService {
             return newAssignment;
         } catch (error) {
             await transaction.rollback();
-            throw createError(500, `Error assigning user to the project: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -94,7 +106,13 @@ class AssignmentService {
             return true;
         } catch (error) {
             await transaction.rollback();
-            throw createError(500, `Error unassigning user from the project: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 }

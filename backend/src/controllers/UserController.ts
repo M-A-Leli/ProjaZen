@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import createError from 'http-errors';
 import UserService from '../services/UserService';
-import logger from '../utils/Logger';
 import User from '../models/User';
 
 class UserController {
@@ -21,7 +20,6 @@ class UserController {
             const users = await UserService.getAllUsers();
             res.json(users.map(user => this.transformUser(user)));
         } catch (error) {
-            logger.error('Error fetching all users:', error);
             next(error);
         }
     }
@@ -30,12 +28,8 @@ class UserController {
         try {
             const { id } = req.params;
             const user = await UserService.getUserById(id);
-            if (!user) {
-                return next(createError(404, 'User not found'));
-            }
             res.json(this.transformUser(user));
         } catch (error) {
-            logger.error(`Error fetching user by ID ${req.params.id}:`, error);
             next(error);
         }
     }
@@ -50,7 +44,6 @@ class UserController {
             const newUser = await UserService.createUser(req.body);
             res.status(201).json(this.transformUser(newUser));
         } catch (error) {
-            logger.error('Error creating user:', error);
             next(error);
         }
     }
@@ -64,12 +57,8 @@ class UserController {
 
         try {
             const updatedUser = await UserService.updateUser(id, req.body);
-            if (!updatedUser) {
-                return next(createError(404, 'User not found'));
-            }
             res.json(this.transformUser(updatedUser));
         } catch (error) {
-            logger.error(`Error updating user by ID ${req.params.id}:`, error);
             next(error);
         }
     }
@@ -78,26 +67,18 @@ class UserController {
         try {
             const { id } = req.params;
             const deletedUser = await UserService.deleteUser(id);
-            if (!deletedUser) {
-                return next(createError(404, 'User not found'));
-            }
             res.status(204).send();
         } catch (error) {
-            logger.error(`Error deleting user by ID ${req.params.id}:`, error);
             next(error);
         }
     }
     
     async getUserProfile(req: Request, res: Response, next: NextFunction) {
         try {
-            if (!req.user) {
-                return res.status(401).json({ message: 'Unauthorized' });
-            }
-    
-            const user = await UserService.getUserById(req.user.id);
+            const { id } = req.params;
+            const user = await UserService.getUserProfile(id);
             res.json(this.transformUser(user));
         } catch (error) {
-            logger.error('Error fetching user profile:', error);
             next(error);
         }
     }
@@ -110,13 +91,9 @@ class UserController {
         }
 
         try {
-            const updatedUser = await UserService.updateUser(id, req.body);
-            if (!updatedUser) {
-                return next(createError(404, 'User not found'));
-            }
+            const updatedUser = await UserService.updateUserProfile(id, req.body);
             res.json(this.transformUser(updatedUser));
         } catch (error) {
-            logger.error(`Error updating user by ID ${req.params.id}:`, error);
             next(error);
         }
     }

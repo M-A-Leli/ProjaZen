@@ -165,7 +165,7 @@ form {
     gap: 15px;
 }
 
-.buttons input,
+.buttons a,
 .buttons button {
     width: 80%;
     padding: 5px 0;
