@@ -11,6 +11,7 @@ body{
     padding: 20px;
     width: 20vw;
     height: auto;
+    background-color: rgb(59, 108, 232);
     border: 1px solid gray;
     box-shadow: 2px solid gray;
 }
@@ -18,14 +19,15 @@ body{
     display: flex;
     gap: 20px;
     padding: 40px;
-    background-color: aliceblue;
-    color: 0px 0px 28px rgba(0, 0, 0, .08);
+    border-radius: 5px;
+    background-color:  rgb(59, 108, 232);
+    color: white;
     font-size: 20px;
     font-weight: 400;
 }
 .admin:hover, .projects:hover, .users:hover, .notifications:hover, .logout:hover{
-    background-color: rgb(21, 21, 24);
-    color: white;
+    background-color:white;
+    color: rgb(147, 135, 135);
     cursor: pointer;
 }
 .container{
@@ -185,13 +187,13 @@ table {
   }
   
   tr:nth-child(even) {
-    background-color: #D6EEEE;
+    background-color:  rgb(171, 193, 248);
   }
   td > button{
     font-size: 12px;
     padding: 10px;
     border-radius: 5px;
-    background-color: cadetblue;
+    background-color: rgb(21, 55, 87);
     color: white;
   }
   td > button:hover{
