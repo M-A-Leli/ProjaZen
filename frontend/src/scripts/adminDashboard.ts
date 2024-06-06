@@ -1,7 +1,10 @@
 import '../styles/adminDashboard.css';
 
 interface Project {
+<<<<<<< HEAD
     id?: string;
+=======
+>>>>>>> 69de807 (added code to files)
     name: string;
     description: string;
     startDate: string;
@@ -30,6 +33,7 @@ const projectName = document.getElementById("project-name") as HTMLInputElement;
 const projectDescription = document.getElementById("text-area") as HTMLTextAreaElement;
 const projectStartDate = document.getElementById("start-date") as HTMLInputElement;
 const projectEndDate = document.getElementById("end-date") as HTMLInputElement;
+<<<<<<< HEAD
 const closeformbtn = document.getElementById('cancel') as HTMLButtonElement;
 
 const updateProjectName = document.getElementById("update-project-name") as HTMLInputElement;
@@ -39,6 +43,8 @@ const updateProjectEndDate = document.getElementById("update-end-date") as HTMLI
 // const updateSubmitButton = document.getElementById("update-submit-button") as HTMLButtonElement;
 
 let selectedProjectId: string | null = null;
+=======
+>>>>>>> 69de807 (added code to files)
 
 if (container) {
     const modalOverlay = document.createElement('div');
@@ -100,6 +106,10 @@ if (container) {
         event.preventDefault(); // Prevent the form from actually submitting
 
         // Collect form data
+<<<<<<< HEAD
+=======
+        // const formData = new FormData(projectForm);a
+>>>>>>> 69de807 (added code to files)
         const project: Project = {
             name: projectName.value,
             description: projectDescription.value,
@@ -122,11 +132,14 @@ if (container) {
 
         // Fetch and display the updated list of projects
         displayProjects();
+<<<<<<< HEAD
     });
 
     closeformbtn.addEventListener('click', () => {
         projectForm.style.display = 'none';
         hideModal();
+=======
+>>>>>>> 69de807 (added code to files)
     });
 
     // Toggle the visibility of the update form when the "Update" button is clicked
@@ -251,6 +264,7 @@ if (container) {
         const response = await fetch('http://localhost:3000/projects');
         const projects: Project[] = await response.json();
 
+<<<<<<< HEAD
         const projectsTable = document.querySelector('.projects-table tbody') as HTMLElement;
         projectsTable.innerHTML = ''; // Clear the existing table rows
 
@@ -274,11 +288,29 @@ if (container) {
 
         // Re-attach event listeners to the new update and delete buttons
         attachProjectActionListeners();
+=======
+        const projectsList = document.querySelector('.projects-list') as HTMLElement;
+        projectsList.innerHTML = '';
+
+        projects.forEach((project) => {
+            const projectCard = document.createElement('div');
+            projectCard.classList.add('project-card');
+            projectCard.innerHTML = `
+                <h3>${project.name}</h3>
+                <p>${project.description}</p>
+                <p>Start Date: ${project.startDate}</p>
+                <p>End Date: ${project.endDate}</p>
+                <button class ="button1 ">assign the project</button>
+            `;
+            projectsList.appendChild(projectCard);
+        });
+>>>>>>> 69de807 (added code to files)
     }
 
     // Fetch and display projects on load
     displayProjects();
 
+<<<<<<< HEAD
     // Function to attach event listeners to project action buttons
     function attachProjectActionListeners() {
         const newUpdateProjectButtons = document.querySelectorAll('#update-project-button') as NodeListOf<HTMLButtonElement>;
@@ -322,6 +354,8 @@ if (container) {
             });
         });
     }
+=======
+>>>>>>> 69de807 (added code to files)
 } else {
-    console.error('Container element not found');
+    console.error('Container element not found');
 }
