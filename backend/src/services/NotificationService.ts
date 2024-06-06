@@ -7,7 +7,13 @@ class NotificationService {
             const notification = await Notification.create(notificationData);
             return notification;
         } catch (error) {
-            throw createError(500, `Error creating notification: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -16,7 +22,13 @@ class NotificationService {
             const notifications = await Notification.findAll({ where: {userId}});
             return notifications;
         } catch (error) {
-            throw createError(500, `Error fetching notifications for user: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -25,7 +37,13 @@ class NotificationService {
             const unreadNotifications = await Notification.findAll({ where: { userId, read: false } });
             return unreadNotifications;
         } catch (error) {
-            throw createError(500, `Error fetching unread notifications for user: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -39,7 +57,13 @@ class NotificationService {
             await notification.save();
             return notification;
         } catch (error) {
-            throw createError(500, `Error marking notification as read: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -52,7 +76,13 @@ class NotificationService {
             await notification.destroy();
             return true;
         } catch (error) {
-            throw createError(500, `Error deleting notification: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 }

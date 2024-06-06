@@ -40,7 +40,6 @@ class LoginForm {
         }
 
         try {
-            console.log("executed up");
             const response = await fetch("/api/v1/auth/login", {
                 method: "POST",
                 headers: {
@@ -49,11 +48,11 @@ class LoginForm {
                 body: JSON.stringify({ email, password })
             });
 
-            console.log("executed down");
-            console.log(response);
-
             if (!response.ok) {
                 throw new Error("An error occurred during login.");
+            } else {
+                // throw new Error(response.error);
+                // console.log(response.body);
             }
 
             const data = await response.json();
@@ -61,6 +60,8 @@ class LoginForm {
 
             // Save token and userid to localStorage or sessionStorage
             localStorage.setItem('token', token);
+
+            console.log(redirectUrl);
 
             // Redirect to the appropriate dashboard
             window.location.href = redirectUrl;

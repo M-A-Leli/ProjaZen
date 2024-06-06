@@ -2,13 +2,20 @@ import bcrypt from 'bcrypt';
 import { UniqueConstraintError } from 'sequelize';
 import createError from 'http-errors';
 import User from '../models/User';
+import logger from '../utils/Logger';
 
 class UserService {
     async getAllUsers() {
         try {
             return await User.findAll();
         } catch (error) {
-            throw createError(500, `Error fetching all users: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -20,7 +27,13 @@ class UserService {
             }
             return user;
         } catch (error) {
-            throw createError(500, `Error fetching user by ID ${id}: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -43,10 +56,13 @@ class UserService {
 
             return newUser;
         } catch (error) {
-            if (error instanceof UniqueConstraintError) {
-                throw createError(409, 'Email already exists');
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
             }
-            throw createError(500, `Error creating user: ${error}`);
         }
     }
 
@@ -62,7 +78,13 @@ class UserService {
             await user.update(updateData);
             return user;
         } catch (error) {
-            throw createError(500, `Error updating user by ID ${id}: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -75,7 +97,13 @@ class UserService {
             await user.destroy();
             return true;
         } catch (error) {
-            throw createError(500, `Error deleting user by ID ${id}: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -87,7 +115,53 @@ class UserService {
             }
             return user;
         } catch (error) {
-            throw createError(500, `Error fetching user by email ${email}: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
+        }
+    }
+
+    async getUserProfile(id: string) {
+        try {
+            const user = await User.findByPk(id);
+            if (!user) {
+                throw createError(404, 'User not found');
+            }
+            return user;
+        } catch (error) {
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
+        }
+    }
+
+    async updateUserProfile(id: string, updateData: any) {
+        try {
+            const user = await User.findByPk(id);
+            if (!user) {
+                throw createError(404, 'User not found');
+            }
+            if (updateData.password) {
+                updateData.password = await bcrypt.hash(updateData.password, 10);
+            }
+            await user.update(updateData);
+            return user;
+        } catch (error) {
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 }

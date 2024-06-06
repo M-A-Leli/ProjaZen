@@ -9,7 +9,13 @@ class ProjectService {
         try {
             return await Project.findAll();
         } catch (error) {
-            throw createError(500, `Error fetching all projects: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -21,16 +27,34 @@ class ProjectService {
             }
             return project;
         } catch (error) {
-            throw createError(500, `Error fetching project by ID: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
     async createProject(projectData: any) {
         try {
+            const existingProject = await Project.findOne({ where: { name: projectData.name } });
+            
+            if (existingProject) {
+                throw createError(409, 'Project already exists');
+            }
+
             const newProject = await Project.create(projectData);
             return newProject;
         } catch (error) {
-            throw createError(500, `Error creating project: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -43,7 +67,13 @@ class ProjectService {
             await project.update(updateData);
             return project;
         } catch (error) {
-            throw createError(500, `Error updating project by ID: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -56,7 +86,13 @@ class ProjectService {
             await project.destroy();
             return true;
         } catch (error) {
-            throw createError(500, `Error deleting project by ID: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
     
@@ -68,7 +104,13 @@ class ProjectService {
             }
             return projects;
         } catch (error) {
-            throw createError(500, `Error fetching ${status} projects: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -80,7 +122,13 @@ class ProjectService {
             }
             return project;
         } catch (error) {
-            throw createError(500, `Error fetching product by name: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -105,7 +153,13 @@ class ProjectService {
 
             return project;
         } catch (error) {
-            throw createError(500, `Error changing project status: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -151,7 +205,13 @@ class ProjectService {
             return project;
         } catch (error) {
             await transaction.rollback();
-            throw createError(500, `Error marking project as completed: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 
@@ -174,7 +234,13 @@ class ProjectService {
                 await project.save();
             }
         } catch (error) {
-            throw createError(500, `Error handling project end dates: ${error}`);
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
         }
     }
 }

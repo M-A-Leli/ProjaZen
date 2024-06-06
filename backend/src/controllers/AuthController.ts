@@ -48,7 +48,6 @@ class AuthController {
             // Send the token and redirect URL to the frontend
             res.status(200).json({ token: accessToken, redirectUrl });
         } catch (error) {
-            logger.error('Login error: ', error);
             next(error);
         }
     }
@@ -65,7 +64,6 @@ class AuthController {
                 }
             });
         } catch (error) {
-            logger.error('Logout error: ', error);
             next(error);
         }
     }
