@@ -19,8 +19,8 @@ const sections = document.querySelectorAll('.section');
 const createProjectButton = document.querySelector('.create-project-button button') as HTMLButtonElement;
 const projectForm = document.querySelector('.project-form') as HTMLFormElement;
 const container = document.querySelector('.container') as HTMLElement | null;
-const updateProjectButtons = document.querySelectorAll('#update-project-button') as NodeListOf<HTMLButtonElement>;
-const deleteProjectButtons = document.querySelectorAll('#delete-project-button') as NodeListOf<HTMLButtonElement>;
+const updateProjectButtons = document.querySelectorAll('.update-project-button') as NodeListOf<HTMLButtonElement>;
+const deleteProjectButtons = document.querySelectorAll('.delete-project-button') as NodeListOf<HTMLButtonElement>;
 const updateForm = document.querySelector('.update-form') as HTMLElement;
 const deleteProjectDiv = document.querySelector('.delete-project') as HTMLElement;
 const deleteYesButton = document.getElementById('yes') as HTMLButtonElement;
@@ -79,11 +79,44 @@ if (container) {
         container!.classList.remove('blur');  // Non-null assertion operator used here
     }
 
-    // Show the project creation form when the "Create New Project" button is clicked
-    createProjectButton.addEventListener('click', () => {
-        projectForm.style.display = 'block';
-        updateForm.style.display = 'none'; // Ensure the update form is hidden
-        showModal();
+    // Function to fetch projects from the fake API
+    async function fetchProjectsFromApi() {
+        try {
+            const response = await fetch(fakeApiUrl);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Failed to fetch projects from API:', error);
+            return [];
+        }
+    }
+
+    // Function to display projects in the projects table
+    function displayProjects(projects: Project[]) {
+        const projectsTable = document.querySelector('.projects-table table') as HTMLTableElement;
+
+        projects.forEach(project => {
+            const row = projectsTable.insertRow(-1); // Insert a row at the end of the table
+            row.innerHTML = `
+                <td>${project.name}</td>
+                <td>${project.description}</td>
+                <td>${project.startDate}</td>
+                <td>${project.endDate}</td>
+                <td>${project.status}</td>
+                <td style="display: flex; gap: 5px;">
+                    <button class="update-project-button">Update</button>
+                    <button class="delete-project-button">Delete</button>
+                </td>
+            `;
+        });
+    }
+
+    // Fetch projects from the API and display them in the projects table
+    fetchProjectsFromApi().then(projects => {
+        displayProjects(projects);
     });
 
     // Function to add project count to unassigned project card
@@ -152,6 +185,12 @@ if (container) {
 
         // Reset the form
         projectForm.reset(); // No more error here
+    });
+
+    // Show the project creation form when clicking the "Create New Project" button
+    createProjectButton.addEventListener('click', () => {
+        projectForm.style.display = 'block';
+        showModal();
     });
 
     // Toggle the visibility of the update form when the "Update" button is clicked
