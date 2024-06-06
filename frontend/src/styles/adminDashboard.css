@@ -65,10 +65,14 @@ body{
 }
 .projects-block{
     padding: 30px;
+    width: 67vw;
+    margin-left: 100px;
+    background-color: #054b6e;
 }
 .create-project-button button{
     background: linear-gradient(blue, skyblue);
     color: white;
+    margin-left: 20px;
     font-size: 12px;
     padding: 10px;
     border-radius: 10px;
@@ -81,7 +85,7 @@ body{
     margin-bottom: 20px;
     margin-left: 50px;
     padding: 20px;
-    background: linear-gradient(cadetblue,rgb(6, 91, 125));
+   display: ;
     text-align: center;
 }
 .project-form label{

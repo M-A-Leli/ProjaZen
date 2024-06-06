@@ -1,44 +1,5 @@
 {
   "projects": [
-    {
-      "id": 1717649539072,
-      "name": "",
-      "description": "sdfghj",
-      "startDate": "",
-      "endDate": "",
-      "status": "Unassigned"
-    },
-    {
-      "id": 1717649546994,
-      "name": "",
-      "description": "sdfghjfgtyujmkl",
-      "startDate": "",
-      "endDate": "",
-      "status": "Unassigned"
-    },
-    {
-      "id": 1717649588033,
-      "name": "",
-      "description": "sdfghjfgtyujmklghujm,kl;",
-      "startDate": "",
-      "endDate": "",
-      "status": "Unassigned"
-    },
-    {
-      "id": 1717650574608,
-      "name": "",
-      "description": "cdfghjkl;",
-      "startDate": "",
-      "endDate": "",
-      "status": "Unassigned"
-    },
-    {
-      "id": 1717650581914,
-      "name": "",
-      "description": "cdfghjkl;fghujik",
-      "startDate": "",
-      "endDate": "",
-      "status": "Unassigned"
-    }
+
   ]
 }

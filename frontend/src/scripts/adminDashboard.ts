@@ -1,23 +1,17 @@
 import '../styles/adminDashboard.css';
 
-// Interface for Project
 interface Project {
-    id: number;
     name: string;
     description: string;
     startDate: string;
     endDate: string;
-    status: string;
 }
-
-// Sample fake API URL
-const fakeApiUrl = 'http://localhost:3000/projects';
 
 // Select all sidebar items and sections
 const sidebarItems = document.querySelectorAll('.sidebar div');
 const sections = document.querySelectorAll('.section');
 const createProjectButton = document.querySelector('.create-project-button button') as HTMLButtonElement;
-const projectForm = document.querySelector('.project-form') as HTMLFormElement;
+const projectForm = document.querySelector('.project-form form') as HTMLFormElement;
 const container = document.querySelector('.container') as HTMLElement | null;
 const updateProjectButtons = document.querySelectorAll('#update-project-button') as NodeListOf<HTMLButtonElement>;
 const deleteProjectButtons = document.querySelectorAll('#delete-project-button') as NodeListOf<HTMLButtonElement>;
@@ -30,6 +24,11 @@ const userButtons = document.querySelectorAll('.user-buttons button');
 const registeredUsersTable = document.querySelector('.registered-users') as HTMLElement;
 const assignedUsersTable = document.querySelector('.assigned-users') as HTMLElement;
 const unassignedUsersTable = document.querySelector('.unassigned-users') as HTMLElement;
+
+const projectName = document.getElementById("project-name") as HTMLInputElement;
+const projectDescription = document.getElementById("text-area") as HTMLTextAreaElement;
+const projectStartDate = document.getElementById("start-date") as HTMLInputElement;
+const projectEndDate = document.getElementById("end-date") as HTMLInputElement;
 
 if (container) {
     const modalOverlay = document.createElement('div');
@@ -86,72 +85,34 @@ if (container) {
         showModal();
     });
 
-    // Function to add project count to unassigned project card
-    function addProjectCountToUnassigned(count: number) {
-        const unassignedProjectCard = document.querySelector('.unassigned-project-card') as HTMLElement;
-        unassignedProjectCard.innerHTML = `<p>Unassigned Projects (${count})</p>`;
-    }
-
-    // Function to add project to unassigned project card
-    function addProjectToUnassigned(project: Project) {
-        const unassignedProjectCard = document.querySelector('.unassigned-project-card') as HTMLElement;
-        const existingCount = parseInt((unassignedProjectCard.textContent || '').match(/\d+/)?.[0] || '0', 10);
-        const newCount = existingCount + 1;
-        addProjectCountToUnassigned(newCount);
-    }
-
-    // Function to send project to fake API
-    async function sendProjectToApi(project: Project) {
-        try {
-            const response = await fetch(fakeApiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(project)
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            console.log('Project added to API:', data);
-        } catch (error) {
-            console.error('Failed to add project to API:', error);
-        }
-    }
-
-    // Modify the project form submit event listener to handle project creation
+    // Hide the project creation form when the form is submitted
     projectForm.addEventListener('submit', async (event) => {
         event.preventDefault(); // Prevent the form from actually submitting
 
-        // Get form data
-        const projectName = (document.getElementById('project-name') as HTMLInputElement).value;
-        const projectDescription = (document.querySelector('.project-form textarea') as HTMLTextAreaElement).value;
-        const startDate = (document.getElementById('start-date') as HTMLInputElement).value;
-        const endDate = (document.getElementById('end-date') as HTMLInputElement).value;
-
-        // Create a new project object
-        const newProject: Project = {
-            id: Date.now(), // Using timestamp as a simple unique ID
-            name: projectName,
-            description: projectDescription,
-            startDate: startDate,
-            endDate: endDate,
-            status: 'Unassigned'
+        // Collect form data
+        // const formData = new FormData(projectForm);a
+        const project: Project = {
+            name: projectName.value,
+            description: projectDescription.value,
+            startDate: projectStartDate.value,
+            endDate: projectEndDate.value,
         };
 
-        // Add the new project to the unassigned project card
-        addProjectToUnassigned(newProject);
+        // Save the project data to the db.json file (simulate API call)
+        await fetch('http://localhost:3000/projects', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(project),
+        });
 
-        // Send the new project to the fake API
-        await sendProjectToApi(newProject);
-
-        // Hide the project creation form and modal
+        projectForm.reset(); // Reset the form
         projectForm.style.display = 'none';
         hideModal();
 
-        // Reset the form
-        projectForm.reset(); // No more error here
+        // Fetch and display the updated list of projects
+        displayProjects();
     });
 
     // Toggle the visibility of the update form when the "Update" button is clicked
@@ -218,6 +179,31 @@ if (container) {
     // Show the registered users table by default
     showUserTable(registeredUsersTable);
 
+    // Function to fetch and display projects
+    async function displayProjects() {
+        const response = await fetch('http://localhost:3000/projects');
+        const projects: Project[] = await response.json();
+
+        const projectsList = document.querySelector('.projects-list') as HTMLElement;
+        projectsList.innerHTML = '';
+
+        projects.forEach((project) => {
+            const projectCard = document.createElement('div');
+            projectCard.classList.add('project-card');
+            projectCard.innerHTML = `
+                <h3>${project.name}</h3>
+                <p>${project.description}</p>
+                <p>Start Date: ${project.startDate}</p>
+                <p>End Date: ${project.endDate}</p>
+                <button class ="button1 ">assign the project</button>
+            `;
+            projectsList.appendChild(projectCard);
+        });
+    }
+
+    // Fetch and display projects on load
+    displayProjects();
+
 } else {
-    console.error('Container element not found');
+    console.error('Container element not found');
 }
