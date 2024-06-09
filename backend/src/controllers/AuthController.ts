@@ -31,7 +31,7 @@ class AuthController {
             const { email, password } = req.body;
             const user = await UserService.getUserByEmail(email);
 
-            if (!user || !(await bcrypt.compare(password, user.password))) {
+            if (!user || !(await bcrypt.compare(password, user.getPassword()))) {
                 return res.status(401).json({ error: 'Invalid email or password' });
             }
 
@@ -39,9 +39,9 @@ class AuthController {
 
             // Determine the redirect URL based on user's role
             let redirectUrl = '/';
-            if (user.role === 'admin') {
+            if (user.getRole() === 'admin') {
                 redirectUrl = '/admin/dashboard';
-            } else if (user.role === 'user') {
+            } else if (user.getRole() === 'user') {
                 redirectUrl = '/user/dashboard';
             }
 
