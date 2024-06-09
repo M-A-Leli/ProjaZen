@@ -1,5 +1,57 @@
 {
   "projects": [
+<<<<<<< HEAD
 
+=======
+    {
+      "id": "9705",
+      "name": "Computer  graphics",
+      "description": "Styling",
+      "startDate": "2024-06-07",
+      "endDate": "2024-06-30"
+    },
+    {
+      "id": "f37f",
+      "name": "Computer  graphics",
+      "description": "Styling",
+      "startDate": "2024-06-01",
+      "endDate": "2024-06-30"
+    },
+    {
+      "id": "34b6",
+      "name": "Computer  Engineer",
+      "description": "Hard shit",
+      "startDate": "2024-06-03",
+      "endDate": "2024-07-05"
+    },
+    {
+      "id": "254e",
+      "name": "Building",
+      "description": "jeep ",
+      "startDate": "2024-06-09",
+      "endDate": "2024-06-29"
+    },
+    {
+      "id": "5963",
+      "name": "Computer AI",
+      "description": "Airtificail intel",
+      "startDate": "2024-06-01",
+      "endDate": "2024-06-16"
+    },
+    {
+      "id": "60cb",
+      "name": "Computer",
+      "description": "learniiing",
+      "startDate": "2024-06-01",
+      "endDate": "2024-06-30"
+    },
+    {
+      "id": "40a6",
+      "name": "Computer  graphics",
+      "description": "Harder",
+      "startDate": "2024-06-01",
+      "endDate": "2024-06-30"
+    }
+>>>>>>> f23d3bb (added content to files)
   ]
 }
