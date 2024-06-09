@@ -53,7 +53,7 @@ function validateProjectDescription() {
 
 function validateProjectStatus() {
     return body('status')
-        .isIn(['Unassigned', 'Assigned', 'Completed']).withMessage('Project status must be one of: Unassigned, Assigned, Completed');
+        .isIn(['unassigned', 'assigned', 'completed']).withMessage('Project status must be one of: unassigned, assigned, completed');
 }
 
 function validateDate(field: string) {
