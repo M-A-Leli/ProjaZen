@@ -1,113 +1,91 @@
-import { DataTypes, Model, Optional } from 'sequelize';
-import sequelize from '../database/SequelizeInit';
+class Project {
+    private readonly id: string;
+    private name: string;
+    private description: string;
+    private startDate: Date;
+    private endDate: Date;
+    private status: string;
+    private readonly createdAt: Date;
+    private readonly updatedAt: Date;
 
-interface ProjectAttributes {
-    id: string;
-    name: string;
-    description: string;
-    startDate: Date;
-    endDate: Date;
-    status: string;
-}
-
-interface ProjectCreationAttributes extends Optional<ProjectAttributes, 'id'> { }
-
-class Project extends Model<ProjectAttributes, ProjectCreationAttributes> implements ProjectAttributes {
-    private _id!: string;
-    private _name!: string;
-    private _description!: string;
-    private _startDate!: Date;
-    private _endDate!: Date;
-    private _status!: string;
-
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    constructor(
+        id: string,
+        name: string,
+        description: string,
+        startDate: Date,
+        endDate: Date,
+        status: string = 'unassigned',
+        createdAt: Date = new Date(),
+        updatedAt: Date = new Date()
+    ) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     // Getters
-    get id(): string {
-        return this._id;
+    getId(): string {
+        return this.id;
     }
 
-    get name(): string {
-        return this._name;
+    getName(): string {
+        return this.name;
     }
 
-    get description(): string {
-        return this._description;
+    getDescription(): string {
+        return this.description;
     }
 
-    get startDate(): Date {
-        return this._startDate;
+    getStartDate(): Date {
+        return this.startDate;
     }
 
-    get endDate(): Date {
-        return this._endDate;
+    getEndDate(): Date {
+        return this.endDate;
     }
 
-    get status(): string {
-        return this._status;
+    getStatus(): string {
+        return this.status;
+    }
+
+    getCreatedAt(): Date {
+        return this.createdAt;
+    }
+
+    getUpdatedAt(): Date {
+        return this.updatedAt;
     }
 
     // Setters
-    set id(value: string) {
-        this._id = value;
+    setName(name: string): void {
+        this.name = name;
     }
 
-    set name(value: string) {
-        this._name = value;
+    setDescription(description: string): void {
+        this.description = description;
     }
 
-    set description(value: string) {
-        this._description = value;
+    setStartDate(startDate: Date): void {
+        this.startDate = startDate;
     }
 
-    set startDate(value: Date) {
-        this._startDate = value;
+    setEndDate(endDate: Date): void {
+        this.endDate = endDate;
     }
 
-    set endDate(value: Date) {
-        this._endDate = value;
-    }
-
-    set status(value: string) {
-        this._status = value;
+    setStatus(status: string): void {
+        const validStatuses = ['unassigned', 'assigned', 'completed', 'overdue', 'expired'];
+        if (validStatuses.includes(status)) {
+            this.status = status;
+        } else {
+            throw new Error("Status must be one of 'unassigned', 'assigned', 'completed', 'overdue', or 'expired'");
+        }
     }
 }
-
-Project.init(
-    {
-        id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            primaryKey: true,
-        },
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        description: {
-            type: DataTypes.TEXT,
-            allowNull: false,
-        },
-        startDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        endDate: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-        status: {
-            type: DataTypes.ENUM('Unassigned', 'Assigned', 'Completed', 'Expired', 'Overdue'),
-            allowNull: false,
-            defaultValue: 'Unassigned',
-        }
-    },
-    {
-        sequelize,
-        modelName: 'Project',
-        timestamps: true,
-    }
-);
 
 export default Project;

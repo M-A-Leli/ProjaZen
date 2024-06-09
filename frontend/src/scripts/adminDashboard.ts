@@ -1,27 +1,22 @@
 import '../styles/adminDashboard.css';
 
-// Interface for Project
 interface Project {
-    id: number;
+    id?: string;
     name: string;
     description: string;
     startDate: string;
     endDate: string;
-    status: string;
 }
-
-// Sample fake API URL
-const fakeApiUrl = 'http://localhost:3000/api/v1/projects/';
 
 // Select all sidebar items and sections
 const sidebarItems = document.querySelectorAll('.sidebar div');
 const sections = document.querySelectorAll('.section');
 const createProjectButton = document.querySelector('.create-project-button button') as HTMLButtonElement;
-const projectForm = document.querySelector('.project-form') as HTMLFormElement;
+const projectForm = document.querySelector('.project-form form') as HTMLFormElement;
 const container = document.querySelector('.container') as HTMLElement | null;
-const updateProjectButtons = document.querySelectorAll('.update-project-button') as NodeListOf<HTMLButtonElement>;
-const deleteProjectButtons = document.querySelectorAll('.delete-project-button') as NodeListOf<HTMLButtonElement>;
-const updateForm = document.querySelector('.update-form') as HTMLElement;
+const updateProjectButtons = document.querySelectorAll('#update-project-button') as NodeListOf<HTMLButtonElement>;
+const deleteProjectButtons = document.querySelectorAll('#delete-project-button') as NodeListOf<HTMLButtonElement>;
+const updateForm = document.querySelector('.update-form') as HTMLFormElement;
 const deleteProjectDiv = document.querySelector('.delete-project') as HTMLElement;
 const deleteYesButton = document.getElementById('yes') as HTMLButtonElement;
 const deleteNoButton = document.getElementById('no') as HTMLButtonElement;
@@ -30,6 +25,20 @@ const userButtons = document.querySelectorAll('.user-buttons button');
 const registeredUsersTable = document.querySelector('.registered-users') as HTMLElement;
 const assignedUsersTable = document.querySelector('.assigned-users') as HTMLElement;
 const unassignedUsersTable = document.querySelector('.unassigned-users') as HTMLElement;
+
+const projectName = document.getElementById("project-name") as HTMLInputElement;
+const projectDescription = document.getElementById("text-area") as HTMLTextAreaElement;
+const projectStartDate = document.getElementById("start-date") as HTMLInputElement;
+const projectEndDate = document.getElementById("end-date") as HTMLInputElement;
+const closeformbtn = document.getElementById('cancel') as HTMLButtonElement;
+
+const updateProjectName = document.getElementById("update-project-name") as HTMLInputElement;
+const updateProjectDescription = document.getElementById("update-text-area") as HTMLTextAreaElement;
+const updateProjectStartDate = document.getElementById("update-start-date") as HTMLInputElement;
+const updateProjectEndDate = document.getElementById("update-end-date") as HTMLInputElement;
+const updateSubmitButton = document.getElementById("update-submit-button") as HTMLButtonElement;
+
+let selectedProjectId: string | null = null;
 
 if (container) {
     const modalOverlay = document.createElement('div');
@@ -79,129 +88,66 @@ if (container) {
         container!.classList.remove('blur');  // Non-null assertion operator used here
     }
 
-    // Function to fetch projects from the fake API
-    async function fetchProjectsFromApi() {
-        try {
-            const response = await fetch(fakeApiUrl);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Failed to fetch projects from API:', error);
-            return [];
-        }
-    }
-
-    // Function to display projects in the projects table
-    function displayProjects(projects: Project[]) {
-        const projectsTable = document.querySelector('.projects-table table') as HTMLTableElement;
-
-        projects.forEach(project => {
-            const row = projectsTable.insertRow(-1); // Insert a row at the end of the table
-            row.innerHTML = `
-                <td>${project.name}</td>
-                <td>${project.description}</td>
-                <td>${project.startDate}</td>
-                <td>${project.endDate}</td>
-                <td>${project.status}</td>
-                <td style="display: flex; gap: 5px;">
-                    <button class="update-project-button">Update</button>
-                    <button class="delete-project-button">Delete</button>
-                </td>
-            `;
-        });
-    }
-
-    // Function to count projects by status
-    function countProjectsByStatus(projects: Project[], status: string): number {
-        return projects.filter(project => project.status === status).length;
-    }
-
-    // Function to update project counts in the HTML
-    function updateProjectCounts(projects: Project[]) {
-        const statuses = ['unassigned', 'assigned', 'completed', 'expired', 'overdue'];
-        statuses.forEach(status => {
-            const count = countProjectsByStatus(projects, status);
-            const countElement = document.getElementById(`${status}-project-count`);
-            if (countElement) {
-                countElement.textContent = count.toString();
-            }
-        });
-    }
-
-    // Fetch projects from the API and display them in the projects table
-    fetchProjectsFromApi().then(projects => {
-        displayProjects(projects);
-        updateProjectCounts(projects); // Update the project counts
+    // Show the project creation form when the "Create New Project" button is clicked
+    createProjectButton.addEventListener('click', () => {
+        projectForm.style.display = 'block';
+        updateForm.style.display = 'none'; // Ensure the update form is hidden
+        showModal();
     });
 
-    // Function to send project to fake API
-    async function sendProjectToApi(project: Project) {
-        try {
-            const response = await fetch(fakeApiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(project)
-            });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            console.log('Project added to API:', data);
-        } catch (error) {
-            console.error('Failed to add project to API:', error);
-        }
-    }
-
-    // Modify the project form submit event listener to handle project creation
+    // Hide the project creation form when the form is submitted
     projectForm.addEventListener('submit', async (event) => {
         event.preventDefault(); // Prevent the form from actually submitting
 
-        // Get form data
-        const projectName = (document.getElementById('project-name') as HTMLInputElement).value;
-        const projectDescription = (document.querySelector('.project-form textarea') as HTMLTextAreaElement).value;
-        const startDate = (document.getElementById('start-date') as HTMLInputElement).value;
-        const endDate = (document.getElementById('end-date') as HTMLInputElement).value;
-
-        // Create a new project object
-        const newProject: Project = {
-            id: Date.now(), // Using timestamp as a simple unique ID
-            name: projectName,
-            description: projectDescription,
-            startDate: startDate,
-            endDate: endDate,
-            status: 'Unassigned'
+        // Collect form data
+        const project: Project = {
+            name: projectName.value,
+            description: projectDescription.value,
+            startDate: projectStartDate.value,
+            endDate: projectEndDate.value,
         };
 
-        // Send the new project to the fake API
-        await sendProjectToApi(newProject);
-
-        fetchProjectsFromApi().then(projects => {
-            displayProjects(projects);
-            updateProjectCounts(projects); // Update the project counts
+        // Save the project data to the db.json file (simulate API call)
+        await fetch('http://localhost:3000/projects', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(project),
         });
 
-        // Hide the project creation form and modal
+        projectForm.reset(); // Reset the form
         projectForm.style.display = 'none';
         hideModal();
 
-        // Reset the form
-        projectForm.reset(); // No more error here
+        // Fetch and display the updated list of projects
+        displayProjects();
     });
 
-    // Show the project creation form when clicking the "Create New Project" button
-    createProjectButton.addEventListener('click', () => {
-        projectForm.style.display = 'block';
-        showModal();
+    closeformbtn.addEventListener('click', () => {
+        projectForm.style.display = 'none';
+        hideModal();
     });
 
     // Toggle the visibility of the update form when the "Update" button is clicked
     updateProjectButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (event) => {
+            const projectRow = (event.target as HTMLButtonElement).closest('.project-tr') as HTMLElement;
+            selectedProjectId = projectRow.dataset.projectId || null;
+
+            if (selectedProjectId) {
+                // Fetch the project data
+                fetch(`http://localhost:3000/api/v1/projects/${selectedProjectId}`)
+                    .then(response => response.json())
+                    .then((project: Project) => {
+                        // Pre-fill the update form with the project data
+                        updateProjectName.value = project.name;
+                        updateProjectDescription.value = project.description;
+                        updateProjectStartDate.value = project.startDate;
+                        updateProjectEndDate.value = project.endDate;
+                    });
+            }
+
             if (updateForm.style.display === 'none' || updateForm.style.display === '') {
                 updateForm.style.display = 'block';
                 projectForm.style.display = 'none'; // Ensure the project form is hidden
@@ -214,27 +160,64 @@ if (container) {
     });
 
     // Hide the update form when the update form is submitted
-    updateForm.addEventListener('submit', (event) => {
+    updateForm.addEventListener('submit', async (event) => {
         event.preventDefault(); // Prevent the form from actually submitting
-        updateForm.style.display = 'none';
-        hideModal();
+
+        if (selectedProjectId) {
+            // Collect updated form data
+            const updatedProject: Project = {
+                id: selectedProjectId,
+                name: updateProjectName.value,
+                description: updateProjectDescription.value,
+                startDate: updateProjectStartDate.value,
+                endDate: updateProjectEndDate.value,
+            };
+
+            // Update the project data in the db.json file (simulate API call)
+            await fetch(`http://localhost:3000/api/v1/projects/${selectedProjectId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedProject),
+            });
+
+            // Refresh the projects list
+            displayProjects();
+
+            updateForm.reset(); // Reset the update form
+            updateForm.style.display = 'none';
+            hideModal();
+        }
+
+      
     });
 
     // Show the delete confirmation div when a delete button is clicked
     deleteProjectButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (event) => {
+            const projectRow = (event.target as HTMLButtonElement).closest('.project-tr') as HTMLElement;
+            selectedProjectId = projectRow.dataset.projectId || null;
             deleteProjectDiv.style.display = 'block';
             showModal();
         });
     });
 
     // Hide the delete confirmation div when "Yes" or "Cancel" is clicked
-    deleteYesButton.addEventListener('click', () => {
+    deleteYesButton.addEventListener('click', async () => {
+        if (selectedProjectId) {
+            await fetch(`http://localhost:3000/api/v1/projects/${selectedProjectId}`, {
+                method: 'DELETE',
+            });
+            displayProjects(); // Refresh the projects list
+        }
+        selectedProjectId = null;
         deleteProjectDiv.style.display = 'none';
         hideModal();
     });
 
     deleteNoButton.addEventListener('click', () => {
+        selectedProjectId = null;
         deleteProjectDiv.style.display = 'none';
         hideModal();
     });
@@ -263,6 +246,82 @@ if (container) {
     // Show the registered users table by default
     showUserTable(registeredUsersTable);
 
+    // Function to fetch and display projects
+    async function displayProjects() {
+        const response = await fetch('http://localhost:3000/projects');
+        const projects: Project[] = await response.json();
+
+        const projectsTable = document.querySelector('.projects-table tbody') as HTMLElement;
+        projectsTable.innerHTML = ''; // Clear the existing table rows
+
+        projects.forEach((project) => {
+            const projectRow = document.createElement('tr');
+            projectRow.classList.add('project-tr');
+            projectRow.dataset.projectId = project.id; // Add project ID to dataset
+            projectRow.innerHTML = `
+                <td>${project.name}</td>
+                <td>${project.description}</td>
+                <td>${project.startDate}</td>
+                <td>${project.endDate}</td>
+                <td>Unassigned</td>
+                <td style="display: flex; gap: 5px;">
+                    <button id="update-project-button">Update</button>
+                    <button id="delete-project-button">Delete</button>
+                </td>
+            `;
+            projectsTable.appendChild(projectRow);
+        });
+
+        // Re-attach event listeners to the new update and delete buttons
+        attachProjectActionListeners();
+    }
+
+    // Fetch and display projects on load
+    displayProjects();
+
+    // Function to attach event listeners to project action buttons
+    function attachProjectActionListeners() {
+        const newUpdateProjectButtons = document.querySelectorAll('#update-project-button') as NodeListOf<HTMLButtonElement>;
+        const newDeleteProjectButtons = document.querySelectorAll('#delete-project-button') as NodeListOf<HTMLButtonElement>;
+
+        newUpdateProjectButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const projectRow = (event.target as HTMLButtonElement).closest('.project-tr') as HTMLElement;
+                selectedProjectId = projectRow.dataset.projectId || null;
+
+                if (selectedProjectId) {
+                    // Fetch the project data
+                    fetch(`http://localhost:3000/api/v1/projects/${selectedProjectId}`)
+                        .then(response => response.json())
+                        .then((project: Project) => {
+                            // Pre-fill the update form with the project data
+                            updateProjectName.value = project.name;
+                            updateProjectDescription.value = project.description;
+                            updateProjectStartDate.value = project.startDate;
+                            updateProjectEndDate.value = project.endDate;
+                        });
+                }
+
+                if (updateForm.style.display === 'none' || updateForm.style.display === '') {
+                    updateForm.style.display = 'block';
+                    projectForm.style.display = 'none'; // Ensure the project form is hidden
+                    showModal();
+                } else {
+                    updateForm.style.display = 'none';
+                    hideModal();
+                }
+            });
+        });
+
+        newDeleteProjectButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const projectRow = (event.target as HTMLButtonElement).closest('.project-tr') as HTMLElement;
+                selectedProjectId = projectRow.dataset.projectId || null;
+                deleteProjectDiv.style.display = 'block';
+                showModal();
+            });
+        });
+    }
 } else {
     console.error('Container element not found');
 }

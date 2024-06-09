@@ -1,13 +1,31 @@
-import { Op, where } from 'sequelize';
 import createError from 'http-errors';
+import { dbInstance } from '../database/dbInit';
+import * as sql from 'mssql';
 import Project from '../models/Project';
-import Assignment from '../models/Assignment';
-import sequelize from '../database/SequelizeInit';
+import { v4 as uuidv4 } from 'uuid';
 
 class ProjectService {
-    async getAllProjects() {
+    public async getAllProjects(): Promise<Project[]> {
         try {
-            return await Project.findAll();
+            const pool = await dbInstance.connect();
+            const result = await pool.request().execute('GetAllProjects');
+
+            if (result.recordset.length === 0) {
+                throw createError(404, 'No projects at the moment');
+            }
+
+            return result.recordset.map((record: any) =>
+                new Project(
+                    record.Id,
+                    record.name,
+                    record.description,
+                    record.startDate,
+                    record.endDate,
+                    record.status,
+                    record.createdAt,
+                    record.updatedAt
+                )
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -19,13 +37,28 @@ class ProjectService {
         }
     }
 
-    async getProjectById(id: string) {
+    public async getProjectById(projectId: string): Promise<Project> {
         try {
-            const project = await Project.findByPk(id);
-            if (!project) {
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('Id', sql.UniqueIdentifier, projectId)
+                .execute('GetProjectById');
+
+            if (!result.recordset[0]) {
                 throw createError(404, 'Project not found');
             }
-            return project;
+
+            const record = result.recordset[0];
+            return new Project(
+                record.Id,
+                record.name,
+                record.description,
+                record.startDate,
+                record.endDate,
+                record.status,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -37,16 +70,36 @@ class ProjectService {
         }
     }
 
-    async createProject(projectData: any) {
+    public async createProject(
+        name: string,
+        description: string,
+        startDate: Date,
+        endDate: Date,
+        status: string = 'unassigned'
+    ): Promise<Project> {
         try {
-            const existingProject = await Project.findOne({ where: { name: projectData.name } });
-            
-            if (existingProject) {
-                throw createError(409, 'Project already exists');
-            }
+            const id = uuidv4();
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('Id', sql.UniqueIdentifier, id)
+                .input('Name', sql.NVarChar(255), name)
+                .input('Description', sql.NVarChar(255), description)
+                .input('StartDate', sql.DateTime, startDate)
+                .input('EndDate', sql.DateTime, endDate)
+                .input('Status', sql.NVarChar(50), status)
+                .execute('CreateProject');
 
-            const newProject = await Project.create(projectData);
-            return newProject;
+            const record = result.recordset[0];
+            return new Project(
+                record.Id,
+                record.name,
+                record.description,
+                record.startDate,
+                record.endDate,
+                record.status,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -58,14 +111,37 @@ class ProjectService {
         }
     }
 
-    async updateProject(id: string, updateData: any) {
+    public async updateProject(project: Project): Promise<Project> {
         try {
-            const project = await Project.findByPk(id);
-            if (!project) {
+            const pool = await dbInstance.connect();
+            const existingProject = await pool.request()
+                .input('Id', sql.UniqueIdentifier, project.getId())
+                .execute('GetProjectById');
+
+            if (!existingProject.recordset[0]) {
                 throw createError(404, 'Project not found');
             }
-            await project.update(updateData);
-            return project;
+
+            const result = await pool.request()
+                .input('Id', sql.UniqueIdentifier, project.getId())
+                .input('Name', sql.NVarChar(255), project.getName())
+                .input('Description', sql.NVarChar(255), project.getDescription())
+                .input('StartDate', sql.DateTime, project.getStartDate())
+                .input('EndDate', sql.DateTime, project.getEndDate())
+                .input('Status', sql.NVarChar(50), project.getStatus())
+                .execute('UpdateProject');
+
+            const record = result.recordset[0];
+            return new Project(
+                record.Id,
+                record.name,
+                record.description,
+                record.startDate,
+                record.endDate,
+                record.status,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -77,13 +153,21 @@ class ProjectService {
         }
     }
 
-    async deleteProject(id: string) {
+    public async deleteProject(id: string): Promise<boolean> {
         try {
-            const project = await Project.findByPk(id);
-            if (!project) {
+            const pool = await dbInstance.connect();
+            const existingProject = await pool.request()
+                .input('Id', sql.UniqueIdentifier, id)
+                .execute('GetProjectById');
+
+            if (!existingProject.recordset[0]) {
                 throw createError(404, 'Project not found');
             }
-            await project.destroy();
+
+            await pool.request()
+                .input('Id', sql.UniqueIdentifier, id)
+                .execute('DeleteProject');
+
             return true;
         } catch (error) {
             if (error instanceof createError.HttpError) {
@@ -95,14 +179,30 @@ class ProjectService {
             }
         }
     }
-    
-    async getProjectsByStatus(status: string) {
+
+    public async getProjectsByStatus(status: string): Promise<Project[]> {
         try {
-            const projects = await Project.findAll({ where: {status} });
-            if (!projects) {
-                throw createError(404, `${status} projects not found`);
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('Status', sql.NVarChar(50), status)
+                .execute('GetProjectsByStatus');
+
+            if (result.recordset.length === 0) {
+                throw createError(404, `No projects with status ${status} at the moment`);
             }
-            return projects;
+
+            return result.recordset.map((record: any) =>
+                new Project(
+                    record.Id,
+                    record.name,
+                    record.description,
+                    record.startDate,
+                    record.endDate,
+                    record.status,
+                    record.createdAt,
+                    record.updatedAt
+                )
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -114,44 +214,28 @@ class ProjectService {
         }
     }
 
-    async getProjectsByName(name: string) {
+    public async getProjectByName(name: string): Promise<Project> {
         try {
-            const project = await Project.findOne({ where: {name} });
-            if (!project) {
-                throw createError(404, `Project not found`);
-            }
-            return project;
-        } catch (error) {
-            if (error instanceof createError.HttpError) {
-                throw error;
-            } else if (error instanceof Error) {
-                throw createError(500, `Unexpected error: ${error.message}`);
-            } else {
-                throw createError(500, 'Unexpected error occurred');
-            }
-        }
-    }
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('Name', sql.NVarChar(255), name)
+                .execute('GetProjectByName');
 
-    async changeProjectStatus(id: string, status: string) {
-        try {
-            const project = await Project.findByPk(id);
-            if (!project) {
+            if (!result.recordset[0]) {
                 throw createError(404, 'Project not found');
             }
 
-            if (!['Unassigned', 'Assigned', 'Completed'].includes(status)) {
-                throw createError(400, 'Invalid status');
-            }
-
-            //Cannot complete a project that's not assigned
-            if (status === 'Completed' && project.status !== 'Assigned') {
-                throw createError(400, 'Cannot complete a project that is not assigned');
-            }
-
-            project.status = status;
-            await project.save();
-
-            return project;
+            const record = result.recordset[0];
+            return new Project(
+                record.Id,
+                record.name,
+                record.description,
+                record.startDate,
+                record.endDate,
+                record.status,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -163,76 +247,32 @@ class ProjectService {
         }
     }
 
-    // async markProjectAsCompleted(id: string) {
-    //     try {
-    //         const project = await Project.findByPk(id);
-    //         if (!project) {
-    //             throw createError(404, 'Project not found');
-    //         }
-
-    //         project.status = 'Completed';
-    
-    //         await project.save();
-    
-    //         return project;
-    //     } catch (error) {
-    //         throw createError(500, `Error marking project ${id} as completed`);
-    //     }
-    // }
-
-    async markProjectAsCompleted(id: string) {
-        const transaction = await sequelize.transaction();
-
+    public async markProjectAsCompleted(id: string): Promise<Project> {
         try {
-            const project = await Project.findByPk(id, { transaction });
-            if (!project) {
+            const pool = await dbInstance.connect();
+            const existingProject = await pool.request()
+                .input('Id', sql.UniqueIdentifier, id)
+                .execute('GetProjectById');
+
+            if (!existingProject.recordset[0]) {
                 throw createError(404, 'Project not found');
             }
 
-            project.status = 'Completed';
-            await project.save({ transaction });
+            const result = await pool.request()
+                .input('Id', sql.UniqueIdentifier, id)
+                .execute('MarkProjectAsCompleted');
 
-            // const assignment = await Assignment.findOne({ where: { projectId: id }, transaction });
-            // if (assignment) {
-            //     await assignment.destroy({ transaction });
-            // }
-
-            // await NotificationService.createNotification(assignment.userId, `Project ${project.name} has been marked as completed`);
-            // await NotificationService.createNotification(adminId, `Project ${project.name} has been completed by user ${assignment.userId}`);
-
-            await transaction.commit();
-
-            return project;
-        } catch (error) {
-            await transaction.rollback();
-            if (error instanceof createError.HttpError) {
-                throw error;
-            } else if (error instanceof Error) {
-                throw createError(500, `Unexpected error: ${error.message}`);
-            } else {
-                throw createError(500, 'Unexpected error occurred');
-            }
-        }
-    }
-
-    async handleEndDates() {
-        try {
-            const now = new Date();
-            const projects = await Project.findAll({
-                where: {
-                    endDate: { [Op.lte]: now },
-                    status: { [Op.ne]: 'Completed' }
-                }
-            });
-
-            for (const project of projects) {
-                if (project.status === 'Unassigned') {
-                    project.status = 'Expired';
-                } else if (project.status === 'Assigned') {
-                    project.status = 'Overdue';
-                }
-                await project.save();
-            }
+            const record = result.recordset[0];
+            return new Project(
+                record.Id,
+                record.name,
+                record.description,
+                record.startDate,
+                record.endDate,
+                record.status,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;

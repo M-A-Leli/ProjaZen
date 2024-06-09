@@ -1,20 +1,30 @@
 import createError from 'http-errors';
+import { dbInstance } from '../database/dbInit';
+import * as sql from 'mssql';
 import Assignment from '../models/Assignment';
 import User from '../models/User';
 import Project from '../models/Project';
-import sequelize from '../database/SequelizeInit';
-import Notification from '../models/Notification';
-import NotificationService from './NotificationService';
+import { v4 as uuidv4 } from 'uuid';
 
 class AssignmentService {
-
-    async getAssignmentById(id: string) {
+    public async getAllAssignments(): Promise<Assignment[]> {
         try {
-            const user = await Assignment.findByPk(id);
-            if (!user) {
-                throw createError(404, 'Assignment not found');
+            const pool = await dbInstance.connect();
+            const result = await pool.request().execute('GetAllAssignments');
+
+            if (result.recordset.length === 0) {
+                throw createError(404, 'No assignments at the moment');
             }
-            return user;
+
+            return result.recordset.map((record: any) =>
+                new Assignment(
+                    record.Id,
+                    record.UserId,
+                    record.ProjectId,
+                    record.createdAt,
+                    record.updatedAt
+                )
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -26,48 +36,26 @@ class AssignmentService {
         }
     }
 
-    async assignUserToProject(projectId: string, userId: string) {
-        const transaction = await sequelize.transaction();
-
+    public async getAssignmentById(assignmentId: string): Promise<Assignment> {
         try {
-            const project = await Project.findByPk(projectId, { transaction });
-            if (!project) {
-                throw createError(404, 'Project not found');
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('Id', sql.UniqueIdentifier, assignmentId)
+                .execute('GetAssignmentById');
+
+            if (!result.recordset[0]) {
+                throw createError(404, 'Assignment not found');
             }
 
-            const user = await User.findByPk(userId, { transaction });
-            if (!user) {
-                throw createError(404, 'User not found');
-            }
-
-            const userUnavailable = await Assignment.findOne({ where: { userId }, transaction });
-            if (userUnavailable) {
-                throw createError(400, 'User already assigned to a project');
-            }
-
-            // const existingAssignment = await Assignment.findOne({ where: { projectId, userId }, transaction });
-            // if (existingAssignment) {
-            //     throw createError(400, 'User already assigned to the project');
-            // }
-
-            const newAssignment = await Assignment.create({ projectId, userId }, { transaction });
-
-            project.status = 'Assigned';
-            await project.save({ transaction });
-
-            // const notification: Notification = {
-            //     userId: userId,
-            //     message: `You have been assigned to project ${project.name}`,
-            //     read: false
-            // }
-
-            // await NotificationService.createNotification(notification);
-
-            await transaction.commit();
-
-            return newAssignment;
+            const record = result.recordset[0];
+            return new Assignment(
+                record.Id,
+                record.UserId,
+                record.ProjectId,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
-            await transaction.rollback();
             if (error instanceof createError.HttpError) {
                 throw error;
             } else if (error instanceof Error) {
@@ -78,34 +66,83 @@ class AssignmentService {
         }
     }
 
-    async unassignUserFromProject(projectId: string, userId: string) {
-        const transaction = await sequelize.transaction();
-
+    public async createAssignment(userId: string, projectId: string): Promise<Assignment> {
         try {
-            const project = await Project.findByPk(projectId, { transaction });
-            if (!project) {
-                throw createError(404, 'Project not found');
-            }
+            const id = uuidv4();
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('Id', sql.UniqueIdentifier, id)
+                .input('UserId', sql.UniqueIdentifier, userId)
+                .input('ProjectId', sql.UniqueIdentifier, projectId)
+                .execute('CreateAssignment');
 
-            const assignment = await Assignment.findOne({ where: { projectId, userId }, transaction });
-            if (!assignment) {
+            const record = result.recordset[0];
+            return new Assignment(
+                record.Id,
+                record.UserId,
+                record.ProjectId,
+                record.createdAt,
+                record.updatedAt
+            );
+        } catch (error) {
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
+        }
+    }
+
+    public async deleteAssignment(assignmentId: string): Promise<boolean> {
+        try {
+            const pool = await dbInstance.connect();
+            const existingAssignment = await pool.request()
+                .input('Id', sql.UniqueIdentifier, assignmentId)
+                .execute('GetAssignmentById');
+
+            if (!existingAssignment.recordset[0]) {
                 throw createError(404, 'Assignment not found');
             }
 
-            await assignment.destroy({ transaction });
-
-            // If the project is unassigned, update its status
-            const remainingAssignments = await Assignment.findAll({ where: { projectId }, transaction });
-            if (remainingAssignments.length === 0) {
-                project.status = 'Unassigned';
-                await project.save({ transaction });
-            }
-
-            await transaction.commit();
+            await pool.request()
+                .input('Id', sql.UniqueIdentifier, assignmentId)
+                .execute('DeleteAssignment');
 
             return true;
         } catch (error) {
-            await transaction.rollback();
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
+        }
+    }
+
+    public async getAssignmentsByUserId(userId: string): Promise<Assignment[]> {
+        try {
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('UserId', sql.UniqueIdentifier, userId)
+                .execute('GetAssignmentsByUserId');
+
+            if (result.recordset.length === 0) {
+                throw createError(404, `No assignments for user with ID ${userId} at the moment`);
+            }
+
+            return result.recordset.map((record: any) =>
+                new Assignment(
+                    record.Id,
+                    record.UserId,
+                    record.ProjectId,
+                    record.createdAt,
+                    record.updatedAt
+                )
+            );
+        } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
             } else if (error instanceof Error) {
