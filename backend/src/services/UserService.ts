@@ -1,13 +1,32 @@
-import bcrypt from 'bcrypt';
-import { UniqueConstraintError } from 'sequelize';
 import createError from 'http-errors';
+import { dbInstance } from '../database/dbInit';
+import * as sql from 'mssql';
 import User from '../models/User';
-import logger from '../utils/Logger';
+import { v4 as uuidv4 } from 'uuid';
 
 class UserService {
-    async getAllUsers() {
+    public async getAllUsers(): Promise<User[]> {
         try {
-            return await User.findAll();
+            const pool = await dbInstance.connect();
+            const result = await pool.request().execute('GetAllUsers');
+
+            if (result.recordset.length === 0) {
+                throw createError(404, 'No users at the moment');
+            }
+
+            return result.recordset.map((record: any) =>
+                new User(
+                    record.Id,
+                    record.fname,
+                    record.lname,
+                    record.email,
+                    record.password,
+                    record.salt,
+                    record.role,
+                    record.createdAt,
+                    record.updatedAt
+                )
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -19,13 +38,29 @@ class UserService {
         }
     }
 
-    async getUserById(id: string) {
+    public async getUserById(userId: string): Promise<User> {
         try {
-            const user = await User.findByPk(id);
-            if (!user) {
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('Id', sql.UniqueIdentifier, userId)
+                .execute('GetUserById');
+
+            if (!result.recordset[0]) {
                 throw createError(404, 'User not found');
             }
-            return user;
+
+            const record = result.recordset[0];
+            return new User(
+                record.Id,
+                record.fname,
+                record.lname,
+                record.email,
+                record.password,
+                record.salt,
+                record.role,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -37,24 +72,39 @@ class UserService {
         }
     }
 
-    async createUser(userData: any) {
+    public async createUser(
+        fname: string,
+        lname: string,
+        email: string,
+        password: string,
+        salt: string,
+        role: string = 'user'
+    ): Promise<User> {
         try {
-            const existingUser = await User.findOne({ where: { email: userData.email } });
-            
-            if (existingUser) {
-                throw createError(409, 'Email already exists');
-            }
-    
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(userData.password, salt);
+            const id = uuidv4();
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('Id', sql.UniqueIdentifier, id)
+                .input('fname', sql.NVarChar(50), fname)
+                .input('lname', sql.NVarChar(50), lname)
+                .input('email', sql.NVarChar(255), email)
+                .input('password', sql.NVarChar(255), password)
+                .input('salt', sql.NVarChar(255), salt)
+                .input('role', sql.NVarChar(50), role)
+                .execute('CreateUser');
 
-            const newUser = await User.create({
-                ...userData,
-                password: hashedPassword,
-                salt: salt,
-            });
-
-            return newUser;
+            const record = result.recordset[0];
+            return new User(
+                record.Id,
+                record.fname,
+                record.lname,
+                record.email,
+                record.password,
+                record.salt,
+                record.role,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -66,17 +116,39 @@ class UserService {
         }
     }
 
-    async updateUser(id: string, updateData: any) {
+    public async updateUser(user: User): Promise<User> {
         try {
-            const user = await User.findByPk(id);
-            if (!user) {
+            const pool = await dbInstance.connect();
+            const existingUser = await pool.request()
+                .input('Id', sql.UniqueIdentifier, user.getId())
+                .execute('GetUserById');
+
+            if (!existingUser.recordset[0]) {
                 throw createError(404, 'User not found');
             }
-            if (updateData.password) {
-                updateData.password = await bcrypt.hash(updateData.password, 10);
-            }
-            await user.update(updateData);
-            return user;
+
+            const result = await pool.request()
+                .input('Id', sql.UniqueIdentifier, user.getId())
+                .input('fname', sql.NVarChar(50), user.getFname())
+                .input('lname', sql.NVarChar(50), user.getLname())
+                .input('email', sql.NVarChar(255), user.getEmail())
+                .input('password', sql.NVarChar(255), user.getPassword())
+                .input('salt', sql.NVarChar(255), user.getSalt())
+                .input('role', sql.NVarChar(50), user.getRole())
+                .execute('UpdateUser');
+
+            const record = result.recordset[0];
+            return new User(
+                record.Id,
+                record.fname,
+                record.lname,
+                record.email,
+                record.password,
+                record.salt,
+                record.role,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -88,13 +160,21 @@ class UserService {
         }
     }
 
-    async deleteUser(id: string) {
+    public async deleteUser(id: string): Promise<boolean> {
         try {
-            const user = await User.findByPk(id);
-            if (!user) {
+            const pool = await dbInstance.connect();
+            const existingUser = await pool.request()
+                .input('Id', sql.UniqueIdentifier, id)
+                .execute('GetUserById');
+
+            if (!existingUser.recordset[0]) {
                 throw createError(404, 'User not found');
             }
-            await user.destroy();
+
+            await pool.request()
+                .input('Id', sql.UniqueIdentifier, id)
+                .execute('DeleteUser');
+
             return true;
         } catch (error) {
             if (error instanceof createError.HttpError) {
@@ -107,13 +187,29 @@ class UserService {
         }
     }
 
-    async getUserByEmail(email: string) {
+    public async getUserByEmail(email: string): Promise<User> {
         try {
-            const user = await User.findOne({ where: { email } });
-            if (!user) {
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('Email', sql.NVarChar(255), email)
+                .execute('GetUserByEmail');
+
+            if (!result.recordset[0]) {
                 throw createError(404, 'User not found');
             }
-            return user;
+
+            const record = result.recordset[0];
+            return new User(
+                record.Id,
+                record.fname,
+                record.lname,
+                record.email,
+                record.password,
+                record.salt,
+                record.role,
+                record.createdAt,
+                record.updatedAt
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -125,13 +221,28 @@ class UserService {
         }
     }
 
-    async getUserProfile(id: string) {
+    public async getUnassignedUsers(): Promise<User[]> {
         try {
-            const user = await User.findByPk(id);
-            if (!user) {
-                throw createError(404, 'User not found');
+            const pool = await dbInstance.connect();
+            const result = await pool.request().execute('GetUnassignedUsers');
+
+            if (result.recordset.length === 0) {
+                throw createError(404, 'No unassigned users at the moment');
             }
-            return user;
+
+            return result.recordset.map((record: any) =>
+                new User(
+                    record.Id,
+                    record.fname,
+                    record.lname,
+                    record.email,
+                    record.password,
+                    record.salt,
+                    record.role,
+                    record.createdAt,
+                    record.updatedAt
+                )
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -143,17 +254,28 @@ class UserService {
         }
     }
 
-    async updateUserProfile(id: string, updateData: any) {
+    public async getAssignedUsers(): Promise<User[]> {
         try {
-            const user = await User.findByPk(id);
-            if (!user) {
-                throw createError(404, 'User not found');
+            const pool = await dbInstance.connect();
+            const result = await pool.request().execute('GetAssignedUsers');
+
+            if (result.recordset.length === 0) {
+                throw createError(404, 'No assigned users at the moment');
             }
-            if (updateData.password) {
-                updateData.password = await bcrypt.hash(updateData.password, 10);
-            }
-            await user.update(updateData);
-            return user;
+
+            return result.recordset.map((record: any) =>
+                new User(
+                    record.Id,
+                    record.fname,
+                    record.lname,
+                    record.email,
+                    record.password,
+                    record.salt,
+                    record.role,
+                    record.createdAt,
+                    record.updatedAt
+                )
+            );
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;

@@ -1,81 +1,53 @@
-import { DataTypes, Model, Optional } from 'sequelize';
-import sequelize from '../database/SequelizeInit';
-import User from './User';
-import Project from './Project';
+class Assignment {
+    private readonly id: string;
+    private userId: string;
+    private projectId: string;
+    private readonly createdAt: Date;
+    private readonly updatedAt: Date;
 
-interface AssignmentAttributes {
-    id: string;
-    userId: string;
-    projectId: string;
-}
-
-interface AssignmentCreationAttributes extends Optional<AssignmentAttributes, 'id'> {}
-
-class Assignment extends Model<AssignmentAttributes, AssignmentCreationAttributes> implements AssignmentAttributes {
-    private _id!: string;
-    private _userId!: string;
-    private _projectId!: string;
-
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    constructor(
+        id: string,
+        userId: string,
+        projectId: string,
+        createdAt: Date = new Date(),
+        updatedAt: Date = new Date()
+    ) {
+        this.id = id;
+        this.userId = userId;
+        this.projectId = projectId;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     // Getters
-    get id(): string {
-        return this._id;
-    }
-    
-    get userId(): string {
-        return this._userId;
+    getId(): string {
+        return this.id;
     }
 
-    get projectId(): string {
-        return this._projectId;
+    getUserId(): string {
+        return this.userId;
+    }
+
+    getProjectId(): string {
+        return this.projectId;
+    }
+
+    getCreatedAt(): Date {
+        return this.createdAt;
+    }
+
+    getUpdatedAt(): Date {
+        return this.updatedAt;
     }
 
     // Setters
-    set id(value: string) {
-        this._id = value;
+    setUserId(userId: string): void {
+        this.userId = userId;
     }
 
-    set userId(value: string) {
-        this._userId = value;
-    }
-
-    set projectId(value: string) {
-        this._projectId = value;
+    setProjectId(projectId: string): void {
+        this.projectId = projectId;
     }
 }
-
-Assignment.init({
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
-    userId: {
-        type: DataTypes.UUID,
-        references: {
-            model: User,
-            key: 'id',
-        },
-        unique: true,
-    },
-    projectId: {
-        type: DataTypes.UUID,
-        references: {
-            model: Project,
-            key: 'id',
-        },
-    }
-}, {
-    sequelize,
-    modelName: 'Assignment',
-    timestamps: false,
-});
-
-User.hasOne(Assignment, { foreignKey: 'userId' });
-Project.hasMany(Assignment, { foreignKey: 'projectId' });
-Assignment.belongsTo(User, { foreignKey: 'userId' });
-Assignment.belongsTo(Project, { foreignKey: 'projectId' });
 
 export default Assignment;

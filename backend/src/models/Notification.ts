@@ -1,89 +1,64 @@
-import { Model, DataTypes ,Optional } from 'sequelize';
-import sequelize from '../database/SequelizeInit';
-import User from './User';
-import Project from './Project';
+class Notification {
+    private readonly id: string;
+    private userId: string;
+    private message: string;
+    private read: boolean;
+    private readonly createdAt: Date;
+    private readonly updatedAt: Date;
 
-interface NotificationAttributes {
-    id: string;
-    userId: string;
-    message: string;
-    read: boolean;
-}
-
-interface NotificationCreationAttributes extends Optional<NotificationAttributes, 'id'> {}
-
-class Notification extends Model<NotificationAttributes, NotificationCreationAttributes> implements NotificationAttributes {
-    private _id!: string;
-    private _userId!: string;
-    private _message!: string;
-    private _read!: boolean;
-
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    constructor(
+        id: string,
+        userId: string,
+        message: string,
+        read: boolean = false,
+        createdAt: Date = new Date(),
+        updatedAt: Date = new Date()
+    ) {
+        this.id = id;
+        this.userId = userId;
+        this.message = message;
+        this.read = read;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     // Getters
-    get id(): string {
-        return this._id;
+    getId(): string {
+        return this.id;
     }
 
-    get userId(): string {
-        return this._userId;
+    getUserId(): string {
+        return this.userId;
     }
 
-    get message(): string {
-        return this._message;
+    getMessage(): string {
+        return this.message;
     }
 
-    get read(): boolean {
-        return this._read;
+    isRead(): boolean {
+        return this.read;
+    }
+
+    getCreatedAt(): Date {
+        return this.createdAt;
+    }
+
+    getUpdatedAt(): Date {
+        return this.updatedAt;
     }
 
     // Setters
-    set id(value: string) {
-        this._id = value;
+    setUserId(userId: string): void {
+        this.userId = userId;
     }
 
-    set userId(value: string) {
-        this._userId = value;
+    setMessage(message: string): void {
+        this.message = message;
     }
 
-    set message(value: string) {
-        this._message = value;
-    }
-
-    set read(value: boolean) {
-        this._read = value;
+    setRead(read: boolean): void {
+        this.read = read;
     }
 }
-
-Notification.init({
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
-    userId: {
-        type: DataTypes.UUID,
-        references: {
-            model: User,
-            key: 'id',
-        },
-    },
-    message: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    read: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-    }
-}, {
-    sequelize,
-    modelName: 'Notification',
-    timestamps: false,
-});
-
-User.hasMany(Notification, { foreignKey: 'userId' });
-Notification.belongsTo(User, { foreignKey: 'userId' });
 
 export default Notification;

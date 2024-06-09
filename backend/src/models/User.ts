@@ -1,120 +1,101 @@
-import { DataTypes, Model, Optional } from 'sequelize';
-import sequelize from '../database/SequelizeInit';
+class User {
+    private readonly id: string;
+    private fname: string;
+    private lname: string;
+    private email: string;
+    private password: string;
+    private salt: string;
+    private role: string;
+    private readonly createdAt: Date;
+    private readonly updatedAt: Date;
 
-interface UserAttributes {
-    id: string;
-    fname: string;
-    lname: string;
-    email: string;
-    password: string;
-    salt: string;
-    role: string;
-}
-
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
-
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-    private _id!: string;
-    private _fname!: string;
-    private _lname!: string;
-    private _email!: string;
-    private _password!: string;
-    private _salt!: string;
-    private _role!: string;
-
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    constructor(
+        id: string,
+        fname: string,
+        lname: string,
+        email: string,
+        password: string,
+        salt: string,
+        role: string = 'user',
+        createdAt: Date = new Date(),
+        updatedAt: Date = new Date()
+    ) {
+        this.id = id;
+        this.fname = fname;
+        this.lname = lname;
+        this.email = email;
+        this.password = password;
+        this.salt = salt;
+        this.role = role;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     // Getters
-    get id(): string {
-        return this._id;
+    getId(): string {
+        return this.id;
     }
 
-    get fname(): string {
-        return this._fname;
+    getFname(): string {
+        return this.fname;
     }
 
-    get lname(): string {
-        return this._lname;
+    getLname(): string {
+        return this.lname;
     }
 
-    get email(): string {
-        return this._email;
+    getEmail(): string {
+        return this.email;
     }
 
-    get password(): string {
-        return this._password;
+    getPassword(): string {
+        return this.password;
     }
 
-    get salt(): string {
-        return this._salt;
+    getSalt(): string {
+        return this.salt;
     }
 
-    get role(): string {
-        return this._role;
+    getRole(): string {
+        return this.role;
+    }
+
+    getCreatedAt(): Date {
+        return this.createdAt;
+    }
+
+    getUpdatedAt(): Date {
+        return this.updatedAt;
     }
 
     // Setters
-    set fname(value: string) {
-        this._fname = value;
+    setFname(fname: string): void {
+        this.fname = fname;
     }
 
-    set lname(value: string) {
-        this._lname = value;
+    setLname(lname: string): void {
+        this.lname = lname;
     }
 
-    set email(value: string) {
-        this._email = value;
+    setEmail(email: string): void {
+        this.email = email;
     }
 
-    set password(value: string) {
-        this._password = value;
+    setPassword(password: string): void {
+        this.password = password;
     }
 
-    set salt(value: string) {
-        this._salt = value;
+    setSalt(salt: string): void {
+        this.salt = salt;
     }
 
-    set role(value: string) {
-        this._role = value;
+    setRole(role: string): void {
+        if (role === 'user' || role === 'admin') {
+            this.role = role;
+        } else {
+            throw new Error("Role must be either 'user' or 'admin'");
+        }
     }
 }
-
-User.init({
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
-    fname: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-    },
-    lname: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-    },
-    email: {
-        type: DataTypes.STRING(100),
-        allowNull: false,
-    },
-    password: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
-    },
-    salt: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
-    },
-    role: {
-        type: DataTypes.ENUM('admin', 'user'),
-        allowNull: false,
-        defaultValue: 'user'
-    },
-}, {
-    sequelize,
-    modelName: 'User',
-    timestamps: true,
-});
 
 export default User;
