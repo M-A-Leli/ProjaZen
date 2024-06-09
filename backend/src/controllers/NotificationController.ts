@@ -5,11 +5,52 @@ import Notification from '../models/Notification';
 
 class NotificationController {
     constructor() {
-        this.createNotification = this.createNotification.bind(this);
-        this.getNotificationsByUserId = this.getNotificationsByUserId.bind(this);
-        this.getUnreadNotifications = this.getUnreadNotifications.bind(this);
+        this.fetchNotificationById = this.fetchNotificationById.bind(this);
+        this.fetchNotificationsByUserId = this.fetchNotificationsByUserId.bind(this);
+        this.fetchUnreadNotificationsByUserId = this.fetchUnreadNotificationsByUserId.bind(this);
         this.markNotificationAsRead = this.markNotificationAsRead.bind(this);
+        this.createNotification = this.createNotification.bind(this);
         this.deleteNotification = this.deleteNotification.bind(this);
+    }
+
+    async fetchNotificationById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            const notification = await NotificationService.getNotificationById(id);
+            res.json(this.transformNotification(notification));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async fetchNotificationsByUserId(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId } = req.params;
+            const notifications = await NotificationService.getNotificationsByUserId(userId);
+            res.json(notifications.map((notification: Notification) => this.transformNotification(notification)));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async fetchUnreadNotificationsByUserId(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { userId } = req.params;
+            const unreadNotifications = await NotificationService.getUnreadNotificationsByUserId(userId);
+            res.json(unreadNotifications.map((notification: Notification) => this.transformNotification(notification)));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async markNotificationAsRead(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            await NotificationService.markNotificationAsRead(id);
+            res.status(200).send('Notification marked as read.');
+        } catch (error) {
+            next(error);
+        }
     }
 
     async createNotification(req: Request, res: Response, next: NextFunction) {
@@ -18,54 +59,24 @@ class NotificationController {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        const { userId, message } = req.body;
+
         try {
-            const newNotification = await NotificationService.createNotification(req.body);
+            const newNotification = await NotificationService.createNotification(userId, message);
             res.status(201).json(this.transformNotification(newNotification));
         } catch (error) {
             next(error);
         }
     }
 
-    async getNotificationsByUserId(req: Request, res: Response, next: NextFunction) {
-        const { userId } = req.params;
-
-        try {
-            const notifications = await NotificationService.getNotificationsByUserId(userId);
-            res.json(notifications.map(notification => this.transformNotification(notification)));
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    async getUnreadNotifications(req: Request, res: Response, next: NextFunction) {
-        const { userId } = req.params;
-
-        try {
-            const unreadNotifications = await NotificationService.getUnreadNotifications(userId);
-            const count = unreadNotifications.length;
-            res.json({count, notifications: unreadNotifications.map((unreadNotification: Notification) => this.transformNotification(unreadNotification))});
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    async markNotificationAsRead(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
-
-        try {
-            const notification = await NotificationService.markNotificationAsRead(id);
-            res.json(this.transformNotification(notification));
-        } catch (error) {
-            next(error);
-        }
-    }
-
     async deleteNotification(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
-
         try {
-            const result = await NotificationService.deleteNotification(id);
-            res.status(204).json({ success: result });
+            const { id } = req.params;
+            const deletionStatus = await NotificationService.deleteNotification(id);
+
+            if (deletionStatus) {
+                res.status(204).send('Notification deleted successfully.');
+            }
         } catch (error) {
             next(error);
         }
@@ -73,12 +84,10 @@ class NotificationController {
 
     private transformNotification(notification: Notification) {
         return {
-            id: notification.id,
-            userId: notification.userId,
-            message: notification.message,
-            read: notification.read,
-            createdAt: notification.createdAt,
-            updatedAt: notification.updatedAt,
+            id: notification.getId(),
+            userId: notification.getUserId(),
+            message: notification.getMessage(),
+            read: notification.isRead()
         };
     }
 }

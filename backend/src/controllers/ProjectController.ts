@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import ProjectService from '../services/ProjectService';
-import { Project } from '../models';
+import Project from '../models/Project';
 
 class ProjectController {
     constructor() {
@@ -11,14 +11,14 @@ class ProjectController {
         this.updateProject = this.updateProject.bind(this);
         this.deleteProject = this.deleteProject.bind(this);
         this.getProjectsByStatus = this.getProjectsByStatus.bind(this);
-        this.changeProjectStatus = this.changeProjectStatus.bind(this);
+        this.getProjectByName = this.getProjectByName.bind(this);
         this.markProjectAsCompleted = this.markProjectAsCompleted.bind(this);
     }
 
     async fetchAllProjects(req: Request, res: Response, next: NextFunction) {
         try {
             const projects = await ProjectService.getAllProjects();
-            res.json(projects.map(project => this.transformProject(project)));
+            res.json(projects.map((project: Project) => this.transformProject(project)));
         } catch (error) {
             next(error);
         }
@@ -40,8 +40,10 @@ class ProjectController {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        const { name, description, startDate, endDate, status } = req.body;
+
         try {
-            const newProject = await ProjectService.createProject(req.body);
+            const newProject = await ProjectService.createProject(name, description, startDate, endDate, status);
             res.status(201).json(this.transformProject(newProject));
         } catch (error) {
             next(error);
@@ -55,8 +57,19 @@ class ProjectController {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        // const updatedProjectData = {
+        //     id: id,
+        //     name: req.body.name,
+        //     description: req.body.description,
+        //     startDate: req.body.startDate,
+        //     endDate: req.body.endDate,
+        //     status: req.body.status
+        // };
+
+        const project = new Project(id, req.body.name, req.body.description, req.body.startDate, req.body.endDate, req.body.status);
+
         try {
-            const updatedProject = await ProjectService.updateProject(id, req.body);
+            const updatedProject = await ProjectService.updateProject(project);
             res.json(this.transformProject(updatedProject));
         } catch (error) {
             next(error);
@@ -66,8 +79,11 @@ class ProjectController {
     async deleteProject(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params;
-            const deletedProject = await ProjectService.deleteProject(id);
-            res.status(204).send();
+            const deletionStatus = await ProjectService.deleteProject(id);
+
+            if (deletionStatus) {
+                res.status(204).send('Project deleted successfully.');
+            }
         } catch (error) {
             next(error);
         }
@@ -77,29 +93,27 @@ class ProjectController {
         try {
             const { status } = req.params;
             const projects = await ProjectService.getProjectsByStatus(status);
-            res.json(projects.map(project => this.transformProject(project)));
+            res.json(projects.map((project: Project) => this.transformProject(project)));
         } catch (error) {
             next(error);
         }
     }
 
-    async changeProjectStatus(req: Request, res: Response, next: NextFunction) {
+    async getProjectByName(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params;
-            const { status } = req.body;
-            const updatedProject = await ProjectService.changeProjectStatus(id, status);
-            res.json(this.transformProject(updatedProject));
+            const { name } = req.params;
+            const project = await ProjectService.getProjectByName(name);
+            res.json(this.transformProject(project));
         } catch (error) {
             next(error);
         }
     }
 
     async markProjectAsCompleted(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
-    
         try {
-            const completedProject = await ProjectService.markProjectAsCompleted(id);
-            res.json(this.transformProject(completedProject));
+            const { id } = req.params;
+            await ProjectService.markProjectAsCompleted(id);
+            res.status(200).send('Project marked as completed.');
         } catch (error) {
             next(error);
         }
@@ -107,14 +121,12 @@ class ProjectController {
 
     private transformProject(project: Project) {
         return {
-            id: project.id,
-            name: project.name,
-            description: project.description,
-            startDate: project.startDate,
-            endDate: project.endDate,
-            status: project.status,
-            createdAt: project.createdAt,
-            updatedAt: project.updatedAt,
+            id: project.getId(),
+            name: project.getName(),
+            description: project.getDescription(),
+            startDate: project.getStartDate(),
+            endDate: project.getEndDate(),
+            status: project.getStatus()
         };
     }
 }

@@ -283,6 +283,78 @@ class ProjectService {
             }
         }
     }
+
+    public async handleEndDates(): Promise<void> {
+        try {
+            const now = new Date();
+            const projects = await this.getProjectsByEndDate(now);
+
+            for (const project of projects) {
+                if (project.getStatus() === 'unassigned') {
+                    project.setStatus('expired');
+                } else if (project.getStatus() === 'assigned') {
+                    project.setStatus('overdue');
+                }
+                await this.updateProjectStatus(project);
+            }
+            // !
+        } catch (error) {
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
+        }
+    }
+
+    private async getProjectsByEndDate(endDate: Date): Promise<Project[]> {
+        try {
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('EndDate', sql.DateTime, endDate)
+                .execute('GetProjectsByEndDate');
+
+            return result.recordset.map((record: any) =>
+                new Project(
+                    record.Id,
+                    record.Name,
+                    record.Description,
+                    record.StartDate,
+                    record.EndDate,
+                    record.Status
+                )
+            );
+        } catch (error) {
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
+        }
+    }
+
+    private async updateProjectStatus(project: Project): Promise<void> {
+        try {
+            const pool = await dbInstance.connect();
+            await pool.request()
+                .input('Id', sql.UniqueIdentifier, project.getId())
+                .input('Status', sql.NVarChar(50), project.getStatus())
+                .execute('UpdateProjectStatus');
+            // !
+        } catch (error) {
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
+        }
+    }
 }
 
 export default new ProjectService();
