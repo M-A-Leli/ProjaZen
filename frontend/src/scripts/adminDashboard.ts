@@ -36,7 +36,7 @@ const updateProjectName = document.getElementById("update-project-name") as HTML
 const updateProjectDescription = document.getElementById("update-text-area") as HTMLTextAreaElement;
 const updateProjectStartDate = document.getElementById("update-start-date") as HTMLInputElement;
 const updateProjectEndDate = document.getElementById("update-end-date") as HTMLInputElement;
-const updateSubmitButton = document.getElementById("update-submit-button") as HTMLButtonElement;
+// const updateSubmitButton = document.getElementById("update-submit-button") as HTMLButtonElement;
 
 let selectedProjectId: string | null = null;
 
