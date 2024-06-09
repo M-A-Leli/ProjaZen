@@ -2,8 +2,6 @@ import createError from 'http-errors';
 import { dbInstance } from '../database/dbInit';
 import * as sql from 'mssql';
 import Assignment from '../models/Assignment';
-import User from '../models/User';
-import Project from '../models/Project';
 import { v4 as uuidv4 } from 'uuid';
 
 class AssignmentService {
@@ -127,10 +125,41 @@ class AssignmentService {
             const pool = await dbInstance.connect();
             const result = await pool.request()
                 .input('UserId', sql.UniqueIdentifier, userId)
-                .execute('GetAssignmentsByUserId');
+                .execute('GetAssignmentsForUser');
 
             if (result.recordset.length === 0) {
                 throw createError(404, `No assignments for user with ID ${userId} at the moment`);
+            }
+
+            return result.recordset.map((record: any) =>
+                new Assignment(
+                    record.Id,
+                    record.UserId,
+                    record.ProjectId,
+                    record.createdAt,
+                    record.updatedAt
+                )
+            );
+        } catch (error) {
+            if (error instanceof createError.HttpError) {
+                throw error;
+            } else if (error instanceof Error) {
+                throw createError(500, `Unexpected error: ${error.message}`);
+            } else {
+                throw createError(500, 'Unexpected error occurred');
+            }
+        }
+    }
+
+    public async getAssignmentsForProject(projectId: string): Promise<Assignment[]> {
+        try {
+            const pool = await dbInstance.connect();
+            const result = await pool.request()
+                .input('ProjectId', sql.UniqueIdentifier, projectId)
+                .execute('GetAssignmentsForProject');
+
+            if (result.recordset.length === 0) {
+                throw createError(404, `No assignments found for project with ID ${projectId}`);
             }
 
             return result.recordset.map((record: any) =>
