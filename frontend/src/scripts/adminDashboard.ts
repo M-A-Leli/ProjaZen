@@ -1,6 +1,7 @@
 import '../styles/adminDashboard.css';
 
 interface Project {
+    id?: string;
     name: string;
     description: string;
     startDate: string;
@@ -15,7 +16,7 @@ const projectForm = document.querySelector('.project-form form') as HTMLFormElem
 const container = document.querySelector('.container') as HTMLElement | null;
 const updateProjectButtons = document.querySelectorAll('#update-project-button') as NodeListOf<HTMLButtonElement>;
 const deleteProjectButtons = document.querySelectorAll('#delete-project-button') as NodeListOf<HTMLButtonElement>;
-const updateForm = document.querySelector('.update-form') as HTMLElement;
+const updateForm = document.querySelector('.update-form') as HTMLFormElement;
 const deleteProjectDiv = document.querySelector('.delete-project') as HTMLElement;
 const deleteYesButton = document.getElementById('yes') as HTMLButtonElement;
 const deleteNoButton = document.getElementById('no') as HTMLButtonElement;
@@ -29,6 +30,15 @@ const projectName = document.getElementById("project-name") as HTMLInputElement;
 const projectDescription = document.getElementById("text-area") as HTMLTextAreaElement;
 const projectStartDate = document.getElementById("start-date") as HTMLInputElement;
 const projectEndDate = document.getElementById("end-date") as HTMLInputElement;
+const closeformbtn = document.getElementById('cancel') as HTMLButtonElement;
+
+const updateProjectName = document.getElementById("update-project-name") as HTMLInputElement;
+const updateProjectDescription = document.getElementById("update-text-area") as HTMLTextAreaElement;
+const updateProjectStartDate = document.getElementById("update-start-date") as HTMLInputElement;
+const updateProjectEndDate = document.getElementById("update-end-date") as HTMLInputElement;
+const updateSubmitButton = document.getElementById("update-submit-button") as HTMLButtonElement;
+
+let selectedProjectId: string | null = null;
 
 if (container) {
     const modalOverlay = document.createElement('div');
@@ -90,7 +100,6 @@ if (container) {
         event.preventDefault(); // Prevent the form from actually submitting
 
         // Collect form data
-        // const formData = new FormData(projectForm);a
         const project: Project = {
             name: projectName.value,
             description: projectDescription.value,
@@ -115,9 +124,30 @@ if (container) {
         displayProjects();
     });
 
+    closeformbtn.addEventListener('click', () => {
+        projectForm.style.display = 'none';
+        hideModal();
+    });
+
     // Toggle the visibility of the update form when the "Update" button is clicked
     updateProjectButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (event) => {
+            const projectRow = (event.target as HTMLButtonElement).closest('.project-tr') as HTMLElement;
+            selectedProjectId = projectRow.dataset.projectId || null;
+
+            if (selectedProjectId) {
+                // Fetch the project data
+                fetch(`http://localhost:3000/projects/${selectedProjectId}`)
+                    .then(response => response.json())
+                    .then((project: Project) => {
+                        // Pre-fill the update form with the project data
+                        updateProjectName.value = project.name;
+                        updateProjectDescription.value = project.description;
+                        updateProjectStartDate.value = project.startDate;
+                        updateProjectEndDate.value = project.endDate;
+                    });
+            }
+
             if (updateForm.style.display === 'none' || updateForm.style.display === '') {
                 updateForm.style.display = 'block';
                 projectForm.style.display = 'none'; // Ensure the project form is hidden
@@ -130,27 +160,64 @@ if (container) {
     });
 
     // Hide the update form when the update form is submitted
-    updateForm.addEventListener('submit', (event) => {
+    updateForm.addEventListener('submit', async (event) => {
         event.preventDefault(); // Prevent the form from actually submitting
-        updateForm.style.display = 'none';
-        hideModal();
+
+        if (selectedProjectId) {
+            // Collect updated form data
+            const updatedProject: Project = {
+                id: selectedProjectId,
+                name: updateProjectName.value,
+                description: updateProjectDescription.value,
+                startDate: updateProjectStartDate.value,
+                endDate: updateProjectEndDate.value,
+            };
+
+            // Update the project data in the db.json file (simulate API call)
+            await fetch(`http://localhost:3000/projects/${selectedProjectId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedProject),
+            });
+
+            // Refresh the projects list
+            displayProjects();
+
+            updateForm.reset(); // Reset the update form
+            updateForm.style.display = 'none';
+            hideModal();
+        }
+
+      
     });
 
     // Show the delete confirmation div when a delete button is clicked
     deleteProjectButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (event) => {
+            const projectRow = (event.target as HTMLButtonElement).closest('.project-tr') as HTMLElement;
+            selectedProjectId = projectRow.dataset.projectId || null;
             deleteProjectDiv.style.display = 'block';
             showModal();
         });
     });
 
     // Hide the delete confirmation div when "Yes" or "Cancel" is clicked
-    deleteYesButton.addEventListener('click', () => {
+    deleteYesButton.addEventListener('click', async () => {
+        if (selectedProjectId) {
+            await fetch(`http://localhost:3000/projects/${selectedProjectId}`, {
+                method: 'DELETE',
+            });
+            displayProjects(); // Refresh the projects list
+        }
+        selectedProjectId = null;
         deleteProjectDiv.style.display = 'none';
         hideModal();
     });
 
     deleteNoButton.addEventListener('click', () => {
+        selectedProjectId = null;
         deleteProjectDiv.style.display = 'none';
         hideModal();
     });
@@ -184,26 +251,77 @@ if (container) {
         const response = await fetch('http://localhost:3000/projects');
         const projects: Project[] = await response.json();
 
-        const projectsList = document.querySelector('.projects-list') as HTMLElement;
-        projectsList.innerHTML = '';
+        const projectsTable = document.querySelector('.projects-table tbody') as HTMLElement;
+        projectsTable.innerHTML = ''; // Clear the existing table rows
 
         projects.forEach((project) => {
-            const projectCard = document.createElement('div');
-            projectCard.classList.add('project-card');
-            projectCard.innerHTML = `
-                <h3>${project.name}</h3>
-                <p>${project.description}</p>
-                <p>Start Date: ${project.startDate}</p>
-                <p>End Date: ${project.endDate}</p>
-                <button class ="button1 ">assign the project</button>
+            const projectRow = document.createElement('tr');
+            projectRow.classList.add('project-tr');
+            projectRow.dataset.projectId = project.id; // Add project ID to dataset
+            projectRow.innerHTML = `
+                <td>${project.name}</td>
+                <td>${project.description}</td>
+                <td>${project.startDate}</td>
+                <td>${project.endDate}</td>
+                <td>Unassigned</td>
+                <td style="display: flex; gap: 5px;">
+                    <button id="update-project-button">Update</button>
+                    <button id="delete-project-button">Delete</button>
+                </td>
             `;
-            projectsList.appendChild(projectCard);
+            projectsTable.appendChild(projectRow);
         });
+
+        // Re-attach event listeners to the new update and delete buttons
+        attachProjectActionListeners();
     }
 
     // Fetch and display projects on load
     displayProjects();
 
+    // Function to attach event listeners to project action buttons
+    function attachProjectActionListeners() {
+        const newUpdateProjectButtons = document.querySelectorAll('#update-project-button') as NodeListOf<HTMLButtonElement>;
+        const newDeleteProjectButtons = document.querySelectorAll('#delete-project-button') as NodeListOf<HTMLButtonElement>;
+
+        newUpdateProjectButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const projectRow = (event.target as HTMLButtonElement).closest('.project-tr') as HTMLElement;
+                selectedProjectId = projectRow.dataset.projectId || null;
+
+                if (selectedProjectId) {
+                    // Fetch the project data
+                    fetch(`http://localhost:3000/projects/${selectedProjectId}`)
+                        .then(response => response.json())
+                        .then((project: Project) => {
+                            // Pre-fill the update form with the project data
+                            updateProjectName.value = project.name;
+                            updateProjectDescription.value = project.description;
+                            updateProjectStartDate.value = project.startDate;
+                            updateProjectEndDate.value = project.endDate;
+                        });
+                }
+
+                if (updateForm.style.display === 'none' || updateForm.style.display === '') {
+                    updateForm.style.display = 'block';
+                    projectForm.style.display = 'none'; // Ensure the project form is hidden
+                    showModal();
+                } else {
+                    updateForm.style.display = 'none';
+                    hideModal();
+                }
+            });
+        });
+
+        newDeleteProjectButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const projectRow = (event.target as HTMLButtonElement).closest('.project-tr') as HTMLElement;
+                selectedProjectId = projectRow.dataset.projectId || null;
+                deleteProjectDiv.style.display = 'block';
+                showModal();
+            });
+        });
+    }
 } else {
-    console.error('Container element not found');
+    console.error('Container element not found');
 }
