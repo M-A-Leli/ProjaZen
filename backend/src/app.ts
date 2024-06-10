@@ -54,12 +54,22 @@ app.get('/register', (req, res) => {
 });
 
 // Admin dashboard
-app.get('/admin/dashboard', authenticateToken, authorizeAdmin, (req, res) => {
+// app.get('/admin/dashboard', authenticateToken, authorizeAdmin, (req, res) => {
+//     res.sendFile(path.join(__dirname, '../../frontend/dist/src/pages/adminDashboard.html'));
+// });
+
+// User dashboard
+// app.get('/user/dashboard', authenticateToken, authorizeUser, (req, res) => {
+//     res.sendFile(path.join(__dirname, '../../frontend/dist/src/pages/userDashboard.html'));
+// });
+
+// Admin dashboard
+app.get('/admin/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/dist/src/pages/adminDashboard.html'));
 });
 
 // User dashboard
-app.get('/user/dashboard', authenticateToken, authorizeUser, (req, res) => {
+app.get('/user/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/dist/src/pages/userDashboard.html'));
 });
 
