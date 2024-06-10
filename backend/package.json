@@ -1,30 +1,38 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "json-server db.json"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "express-validator": "^7.1.0",
+    "json-server": "^1.0.0-beta.1",
     "jsonwebtoken": "^9.0.2",
     "mssql": "^10.0.2",
+    "mysql2": "^3.9.7",
     "node-schedule": "^2.1.1",
-    "nodemailer": "^6.9.13"
+    "nodemailer": "^6.9.13",
+    "sequelize": "^6.37.3",
+    "uuid": "^10.0.0",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
+    "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
@@ -33,9 +41,12 @@
     "@types/mssql": "^9.1.5",
     "@types/node": "^20.12.12",
     "@types/nodemailer": "^6.4.15",
+    "@types/sequelize": "^4.28.20",
+    "@types/uuid": "^9.0.8",
     "nodemon": "^3.1.2",
     "ts-node-dev": "^2.0.0",
     "tsc-node": "^0.0.3",
     "typescript": "^5.4.5"
-  }
+  },
+  "description": ""
 }

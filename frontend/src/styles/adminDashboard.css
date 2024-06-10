@@ -3,5 +3,345 @@
     padding: 0;
     box-sizing: border-box;
 }
+body{
+    overflow-x: hidden;
+    display: flex;
+}
+.sidebar{
+    padding: 20px;
+    width: 20vw;
+    height: auto;
+    background-color: rgb(59, 108, 232);
+    border: 1px solid gray;
+    box-shadow: 2px solid gray;
+}
+.admin, .projects, .users, .notifications, .logout{
+    display: flex;
+    gap: 20px;
+    padding: 40px;
+    border-radius: 5px;
+    background-color:  rgb(59, 108, 232);
+    color: white;
+    font-size: 20px;
+    font-weight: 400;
+}
+.admin:hover, .projects:hover, .users:hover, .notifications:hover, .logout:hover{
+    background-color:white;
+    color: rgb(147, 135, 135);
+    cursor: pointer;
+}
+.container{
+    padding: 40px;
+    background-color: aliceblue;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: scroll;
+    width: 100vw;
+}
+#projects{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    gap: 30px;
+    height: auto;
+}
+.welcome{
+    display: flex;
+    gap: 20px;
+    background-color: white;
+    height: 45vh;
+}
+.welcome-image img{
+    background-color: white;
+    height: 45vh;
+}
+.welcome-text{
+    font-size: 20px;
+    font-weight: 300;
+    padding: 10px;
+}
+.welcome-text p{
+    padding: 10px;
+}
+.projects-block{
+    padding: 30px;
+}
+.create-project-button button{
+    background: linear-gradient(blue, skyblue);
+    color: white;
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 10px;
+}
+.create-project-button button:hover{
+    background-color: rgb(6, 91, 125);
+    color: white;
+}
+.project-form {
+    margin-bottom: 20px;
+    margin-left: 50px;
+    padding: 20px;
+    background: linear-gradient(cadetblue,rgb(6, 91, 125));
+    text-align: center;
+}
+.project-form label{
+    font-size: 20px;
+    font-weight: 300;
+}
+.project-form input, .project-form textarea {
+    padding: 8px;
+    width: 70%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.project-form button{
+    background: linear-gradient(aliceblue,skyblue);
+    padding: 12px;
+    font-size: 12px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0px 0px 10px 5px rgba(251, 224, 224, 0.5);
+    align-self: center;
+}
+.project-form button:hover{
+    cursor: pointer;
+}
+/* Modal background overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
+/* Modal form container */
+.modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+}
 
+/* Blur effect for background */
+.blur {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+.projects-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    padding: 30px;
+}
+#project-card{
+    background-color: white;
+    width: 200px;
+    height: 150px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 5px rgb(6, 91, 125);
+    transition: transform 0.3s;
+}
+.project-card:hover{
+    transform: translateY(-10px);
+}
+.text{
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+}
+/* .text h1{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(cadetblue,pink);
+} */
+.projects-table{
+    background-color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 60vw;
+    height: fit-content;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color:  rgb(171, 193, 248);
+  }
+  td > button{
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgb(21, 55, 87);
+    color: white;
+  }
+  td > button:hover{
+    cursor: pointer;
+  }
+  .update-form {
+    margin-bottom: 20px;
+    margin-left: 50px;
+    padding: 20px;
+    background: linear-gradient(cadetblue,rgb(6, 91, 125));
+    text-align: center;
+}
+.update-form label{
+    font-size: 20px;
+    font-weight: 300;
+}
+.update-form input, .update-form textarea {
+    padding: 8px;
+    width: 70%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.update-form button{
+    background: linear-gradient(aliceblue,skyblue);
+    padding: 12px;
+    font-size: 12px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0px 0px 10px 5px rgba(251, 224, 224, 0.5);
+    align-self: center;
+}
+.update-form button:hover{
+    cursor: pointer;
+}
+.delete-project{
+    background: linear-gradient (cadetblue,rgb(6, 91, 125));
+    padding: 12px;
+    font-size: 12px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0px 0px 10px 5px rgba(251, 224, 224, 0.5);
+    align-self: center;
+    text-align: center;
+}
+.delete-project button{
+    background-color: white;
+    color: black;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+}
+.yes-no-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+.delete-project p{
+    font-size: 20px;
+    font-weight: 300;
+}
+#users{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    gap: 30px;
+    height: auto; 
+}
+#users button{
+    display: flex;
+    gap: 30px;
+    padding: 10px;
+    background-color: cornflowerblue;
+    color: white;
+    border-radius: 5px;
+}
+#users button:hover{
+    cursor: pointer;
+}
+.user-buttons{
+    display: flex;
+    flex-direction: row;
+    padding: 30px;
+    gap: 30px;
+}
+.assign-form {
+    margin-bottom: 20px;
+    margin-left: 50px;
+    padding: 20px;
+    background: linear-gradient(cadetblue,rgb(6, 91, 125));
+    text-align: center;
+}
+#notifications h1{
+    font-size: 30px;
+    font-weight: 300;
+}
+#notifications button{
+    background-color: cornflowerblue;
+    color: white;
+    padding: 12px;
+    border-radius: 5px;
+    border: none;
+}
+.notifications-buttons{
+    display: flex;
+    gap: 30px;
+}
+#logout{
+    width: 60vw;
+  }
+  .logout-container {
+    display: flex;
+    border-radius: 12px;
+    box-shadow: 0px 0px 10px 5px rgb(30, 49, 1);
+    padding: 20px 0px;
+    align-self: center;
+    text-align: center;
+    width: 60vw;
+    height: auto;
+}
+.logout-image img{
+    width: 80%;
+}
+.logout-text{
+    padding: 150px 50px;
+}
+.logout-text h2 {
+    color: black;
+    margin-bottom: 20px;
+}
+
+.logout-text p {
+    color: black;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.logout-text button {
+    background-color: rgb(6, 91, 125);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
+.logout-text button:hover {
+    background-color: #054b6e;
+}

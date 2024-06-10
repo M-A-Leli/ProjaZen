@@ -1,12 +1,18 @@
-import express from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const app = express();
-const port = 3000;
+import app from './app';
+import { connectDB } from './database/dbInit';
 
-app.get('/api/hello', (req, res) => {
-  res.send({ message: 'Hello from the backend!' });
-});
+// Set the port
+const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Backend is running on http://localhost:${port}`);
-});
+const startServer = async () => {
+    await connectDB();
+
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+    });
+};
+
+startServer();
