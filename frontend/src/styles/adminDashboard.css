@@ -11,7 +11,11 @@ body{
     padding: 20px;
     width: 20vw;
     height: auto;
+<<<<<<< HEAD
     background-color: rgb(59, 108, 232);
+=======
+    background-color: rgb(88, 88, 233);
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     border: 1px solid gray;
     box-shadow: 2px solid gray;
 }
@@ -19,15 +23,25 @@ body{
     display: flex;
     gap: 20px;
     padding: 40px;
+<<<<<<< HEAD
     border-radius: 5px;
     background-color:  rgb(59, 108, 232);
+=======
+    background-color: rgb(88, 88, 233);
+    border-radius: 5px;
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     color: white;
     font-size: 20px;
     font-weight: 400;
 }
 .admin:hover, .projects:hover, .users:hover, .notifications:hover, .logout:hover{
+<<<<<<< HEAD
     background-color:white;
     color: rgb(147, 135, 135);
+=======
+    background-color: white;
+    color: rgb(61, 46, 46);
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     cursor: pointer;
 }
 .container{
@@ -67,9 +81,16 @@ body{
 }
 .projects-block{
     padding: 30px;
+<<<<<<< HEAD
     width: 67vw;
     margin-left: 100px;
     background-color: #054b6e;
+=======
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-top: 50px;
+    background-color: white;
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
 }
 .create-project-button button{
     background: linear-gradient(blue, skyblue);
@@ -87,8 +108,23 @@ body{
     margin-bottom: 20px;
     margin-left: 50px;
     padding: 20px;
+<<<<<<< HEAD
    display: ;
+=======
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     text-align: center;
+    
+}
+input,textarea{
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+button{
+    cursor: pointer;
+    border: none;
+    background-color: white;
 }
 .project-form label{
     font-size: 20px;
@@ -148,15 +184,12 @@ body{
     padding: 30px;
 }
 #project-card{
-    background-color: white;
+    background-color: rgb(6, 91, 125);
     width: 200px;
     height: 150px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px 5px rgb(6, 91, 125);
-    transition: transform 0.3s;
-}
-.project-card:hover{
-    transform: translateY(-10px);
+    
+
 }
 .text{
     font-size: 20px;

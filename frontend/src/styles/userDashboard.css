@@ -24,9 +24,15 @@
     font-weight: 400;
     border-radius: 4px;
 }
-.projects:hover, .register:hover, .assigned:hover, .logout:hover{
+.projects:hover, .register:hover, .assigned:hover {
     background-color: white;
     color: rgb(145, 131, 131);
+    cursor: pointer;
+}
+.logout p:hover{
+    /* background-color: white; */
+    font-size: 20px;
+    color: rgb(255, 253, 253);
     cursor: pointer;
 }
 .container{

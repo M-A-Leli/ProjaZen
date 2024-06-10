@@ -27,7 +27,11 @@
     {
       "id": "254e",
       "name": "Building",
+<<<<<<< HEAD
       "description": "jeep ",
+=======
+      "description": "jeep wrangler",
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
       "startDate": "2024-06-09",
       "endDate": "2024-06-29"
     },
@@ -46,11 +50,19 @@
       "endDate": "2024-06-30"
     },
     {
+<<<<<<< HEAD
       "id": "40a6",
       "name": "Computer  graphics",
       "description": "Harder",
       "startDate": "2024-06-01",
       "endDate": "2024-06-30"
+=======
+      "id": "285a",
+      "name": "",
+      "description": "",
+      "startDate": "",
+      "endDate": ""
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     }
 >>>>>>> f23d3bb (added content to files)
   ]

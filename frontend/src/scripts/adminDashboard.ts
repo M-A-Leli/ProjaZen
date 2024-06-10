@@ -2,9 +2,13 @@ import '../styles/adminDashboard.css';
 
 interface Project {
 <<<<<<< HEAD
+<<<<<<< HEAD
     id?: string;
 =======
 >>>>>>> 69de807 (added code to files)
+=======
+    id?: string;
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     name: string;
     description: string;
     startDate: string;
@@ -34,17 +38,26 @@ const projectDescription = document.getElementById("text-area") as HTMLTextAreaE
 const projectStartDate = document.getElementById("start-date") as HTMLInputElement;
 const projectEndDate = document.getElementById("end-date") as HTMLInputElement;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
 const closeformbtn = document.getElementById('cancel') as HTMLButtonElement;
 
 const updateProjectName = document.getElementById("update-project-name") as HTMLInputElement;
 const updateProjectDescription = document.getElementById("update-text-area") as HTMLTextAreaElement;
 const updateProjectStartDate = document.getElementById("update-start-date") as HTMLInputElement;
 const updateProjectEndDate = document.getElementById("update-end-date") as HTMLInputElement;
+<<<<<<< HEAD
 // const updateSubmitButton = document.getElementById("update-submit-button") as HTMLButtonElement;
 
 let selectedProjectId: string | null = null;
 =======
 >>>>>>> 69de807 (added code to files)
+=======
+const updateSubmitButton = document.getElementById("update-submit-button") as HTMLButtonElement;
+
+let selectedProjectId: string | null = null;
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
 
 if (container) {
     const modalOverlay = document.createElement('div');
@@ -107,9 +120,12 @@ if (container) {
 
         // Collect form data
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         // const formData = new FormData(projectForm);a
 >>>>>>> 69de807 (added code to files)
+=======
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
         const project: Project = {
             name: projectName.value,
             description: projectDescription.value,
@@ -133,13 +149,19 @@ if (container) {
         // Fetch and display the updated list of projects
         displayProjects();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     });
 
     closeformbtn.addEventListener('click', () => {
         projectForm.style.display = 'none';
         hideModal();
+<<<<<<< HEAD
 =======
 >>>>>>> 69de807 (added code to files)
+=======
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     });
 
     // Toggle the visibility of the update form when the "Update" button is clicked
@@ -150,7 +172,11 @@ if (container) {
 
             if (selectedProjectId) {
                 // Fetch the project data
+<<<<<<< HEAD
                 fetch(`http://localhost:3000/api/v1/projects/${selectedProjectId}`)
+=======
+                fetch(`http://localhost:3000/projects/${selectedProjectId}`)
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
                     .then(response => response.json())
                     .then((project: Project) => {
                         // Pre-fill the update form with the project data
@@ -187,7 +213,11 @@ if (container) {
             };
 
             // Update the project data in the db.json file (simulate API call)
+<<<<<<< HEAD
             await fetch(`http://localhost:3000/api/v1/projects/${selectedProjectId}`, {
+=======
+            await fetch(`http://localhost:3000/projects/${selectedProjectId}`, {
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -219,7 +249,11 @@ if (container) {
     // Hide the delete confirmation div when "Yes" or "Cancel" is clicked
     deleteYesButton.addEventListener('click', async () => {
         if (selectedProjectId) {
+<<<<<<< HEAD
             await fetch(`http://localhost:3000/api/v1/projects/${selectedProjectId}`, {
+=======
+            await fetch(`http://localhost:3000/projects/${selectedProjectId}`, {
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
                 method: 'DELETE',
             });
             displayProjects(); // Refresh the projects list
@@ -265,6 +299,9 @@ if (container) {
         const projects: Project[] = await response.json();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
         const projectsTable = document.querySelector('.projects-table tbody') as HTMLElement;
         projectsTable.innerHTML = ''; // Clear the existing table rows
 
@@ -288,6 +325,7 @@ if (container) {
 
         // Re-attach event listeners to the new update and delete buttons
         attachProjectActionListeners();
+<<<<<<< HEAD
 =======
         const projectsList = document.querySelector('.projects-list') as HTMLElement;
         projectsList.innerHTML = '';
@@ -305,12 +343,17 @@ if (container) {
             projectsList.appendChild(projectCard);
         });
 >>>>>>> 69de807 (added code to files)
+=======
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     }
 
     // Fetch and display projects on load
     displayProjects();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
     // Function to attach event listeners to project action buttons
     function attachProjectActionListeners() {
         const newUpdateProjectButtons = document.querySelectorAll('#update-project-button') as NodeListOf<HTMLButtonElement>;
@@ -323,7 +366,11 @@ if (container) {
 
                 if (selectedProjectId) {
                     // Fetch the project data
+<<<<<<< HEAD
                     fetch(`http://localhost:3000/api/v1/projects/${selectedProjectId}`)
+=======
+                    fetch(`http://localhost:3000/projects/${selectedProjectId}`)
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
                         .then(response => response.json())
                         .then((project: Project) => {
                             // Pre-fill the update form with the project data
@@ -354,8 +401,14 @@ if (container) {
             });
         });
     }
+<<<<<<< HEAD
 =======
 >>>>>>> 69de807 (added code to files)
 } else {
     console.error('Container element not found');
 }
+=======
+} else {
+    console.error('Container element not found');
+}
+>>>>>>> f32a5892a2e1cede8223496575035b6e11ab1c39
