@@ -4,9 +4,41 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ProjaZen || Home</title>
+    <title>Project Management System</title>
+    <link rel="stylesheet" href="public/" />
   </head>
   <body>
+    <header>
+      <div class="header-content">
+          <div class="logo">
+              <img src="/logo.svg" alt="Logo">
+          </div>
+          <nav>
+              <div class="auth-buttons">
+                <a href="/login"></a><button id="login-btn">Log In</button>
+                  <a href="/register"></a><button id="signup-btn">Register</button>
+              </div>
+          </nav>
+      </div>
+      <div class="status">
+          <p id="backend-status"></p>
+          <p id="frontend-status"></p>
+          <p id="attempts"></p>
+      </div>
+  </header>
+  <main>
+      <div><h1>Welcome to Projazen</h1></div>
+      <section class="hero">
+          <div class="hero-content">
+              <h1>Manage Projects Efficiently!</h1>
+              <p>Experience the best way to manage your projects <br> and tasks with real-time collaboration.</p>
+          </div>
+          <div class="hero-image">
+              <img src="/landing.png" alt="Hero Image">
+          </div>
+      </section>
+  </main>
+
     <div id="app">
       <img src="/logo.svg" alt="">
       <h1>Welcome to ProjaZen</h1>
@@ -14,10 +46,10 @@
       <p id="frontend-status"></p>
       <p id="attempts"></p>
       <ul>
-        <li><a href="./src/pages/login.html">login</a></li>
-        <li><a href="./src/pages/register.html">register</a></li>
-        <li><a href="./src/pages/adminDashboard.html">admin dashboard</a></li>
-        <li><a href="./src/pages/userDashboard.html">user dashboard</a></li>
+        
+        
+        <li><a href="/admin/dashboard">admin dashboard</a></li>
+        <li><a href="/user/dashboard">user dashboard</a></li>
       </ul>
     </div>
 
