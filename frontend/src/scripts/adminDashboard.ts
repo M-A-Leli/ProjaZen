@@ -1,5 +1,5 @@
 import '../styles/adminDashboard.css';
-
+ 
 // Interface for Project
 interface Project {
     id: number;
@@ -9,10 +9,10 @@ interface Project {
     endDate: string;
     status: string;
 }
-
+ 
 // Sample fake API URL
-const fakeApiUrl = 'http://localhost:3000/projects';
-
+const fakeApiUrl = 'http://localhost:3000/projects/';
+ 
 // Select all sidebar items and sections
 const sidebarItems = document.querySelectorAll('.sidebar div');
 const sections = document.querySelectorAll('.section');
@@ -25,12 +25,12 @@ const updateForm = document.querySelector('.update-form') as HTMLElement;
 const deleteProjectDiv = document.querySelector('.delete-project') as HTMLElement;
 const deleteYesButton = document.getElementById('yes') as HTMLButtonElement;
 const deleteNoButton = document.getElementById('no') as HTMLButtonElement;
-
+ 
 const userButtons = document.querySelectorAll('.user-buttons button');
 const registeredUsersTable = document.querySelector('.registered-users') as HTMLElement;
 const assignedUsersTable = document.querySelector('.assigned-users') as HTMLElement;
 const unassignedUsersTable = document.querySelector('.unassigned-users') as HTMLElement;
-
+ 
 if (container) {
     const modalOverlay = document.createElement('div');
     modalOverlay.classList.add('modal-overlay');
@@ -38,7 +38,7 @@ if (container) {
     modalOverlay.appendChild(projectForm);
     modalOverlay.appendChild(updateForm);
     modalOverlay.appendChild(deleteProjectDiv);
-
+ 
     // Function to show the selected section and hide others
     function showSection(selectedSectionId: string) {
         sections.forEach(section => {
@@ -50,7 +50,7 @@ if (container) {
             }
         });
     }
-
+ 
     // Add event listeners to sidebar items
     sidebarItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -58,27 +58,27 @@ if (container) {
             showSection(targetId);
         });
     });
-
+ 
     // Show the default section (projects) on load
     showSection('projects');
-
+ 
     // Hide the project creation form, update form, and delete div by default
     projectForm.style.display = 'none';
     updateForm.style.display = 'none';
     deleteProjectDiv.style.display = 'none';
-
+ 
     // Function to show modal and apply blur effect
     function showModal() {
         modalOverlay.style.display = 'flex';
         container!.classList.add('blur');  // Non-null assertion operator used here
     }
-
+ 
     // Function to hide modal and remove blur effect
     function hideModal() {
         modalOverlay.style.display = 'none';
         container!.classList.remove('blur');  // Non-null assertion operator used here
     }
-
+ 
     // Function to fetch projects from the fake API
     async function fetchProjectsFromApi() {
         try {
@@ -93,11 +93,11 @@ if (container) {
             return [];
         }
     }
-
+ 
     // Function to display projects in the projects table
     function displayProjects(projects: Project[]) {
         const projectsTable = document.querySelector('.projects-table table') as HTMLTableElement;
-
+ 
         projects.forEach(project => {
             const row = projectsTable.insertRow(-1); // Insert a row at the end of the table
             row.innerHTML = `
@@ -113,29 +113,34 @@ if (container) {
             `;
         });
     }
-
+ 
+    // Function to count projects by status
+    function countProjectsByStatus(projects: Project[], status: string): number {
+        return projects.filter(project => project.status === status).length;
+    }
+ 
+    // Function to update project counts in the HTML
+    function updateProjectCounts(projects: Project[]) {
+        const statuses = ['unassigned', 'assigned', 'completed', 'expired', 'overdue'];
+        statuses.forEach(status => {
+            const count = countProjectsByStatus(projects, status);
+            const countElement = document.getElementById(`${status}-project-count`);
+            if (countElement) {
+                countElement.textContent = count.toString();
+            }
+        });
+    }
+ 
     // Fetch projects from the API and display them in the projects table
     fetchProjectsFromApi().then(projects => {
         displayProjects(projects);
+        updateProjectCounts(projects); // Update the project counts
     });
-
-    // Function to add project count to unassigned project card
-    function addProjectCountToUnassigned(count: number) {
-        const unassignedProjectCard = document.querySelector('.unassigned-project-card') as HTMLElement;
-        unassignedProjectCard.innerHTML = `<p>Unassigned Projects (${count})</p>`;
-    }
-
-    // Function to add project to unassigned project card
-    function addProjectToUnassigned(project: Project) {
-        const unassignedProjectCard = document.querySelector('.unassigned-project-card') as HTMLElement;
-        const existingCount = parseInt((unassignedProjectCard.textContent || '').match(/\d+/)?.[0] || '0', 10);
-        const newCount = existingCount + 1;
-        addProjectCountToUnassigned(newCount);
-    }
-
+ 
     // Function to send project to fake API
     async function sendProjectToApi(project: Project) {
         try {
+            console.log(project)
             const response = await fetch(fakeApiUrl, {
                 method: 'POST',
                 headers: {
@@ -152,17 +157,22 @@ if (container) {
             console.error('Failed to add project to API:', error);
         }
     }
-
+ 
     // Modify the project form submit event listener to handle project creation
     projectForm.addEventListener('submit', async (event) => {
         event.preventDefault(); // Prevent the form from actually submitting
-
+ 
         // Get form data
         const projectName = (document.getElementById('project-name') as HTMLInputElement).value;
         const projectDescription = (document.querySelector('.project-form textarea') as HTMLTextAreaElement).value;
         const startDate = (document.getElementById('start-date') as HTMLInputElement).value;
         const endDate = (document.getElementById('end-date') as HTMLInputElement).value;
 
+        console.log(projectName);
+        console.log(endDate);
+        console.log(startDate);
+        
+ 
         // Create a new project object
         const newProject: Project = {
             id: Date.now(), // Using timestamp as a simple unique ID
@@ -172,27 +182,29 @@ if (container) {
             endDate: endDate,
             status: 'Unassigned'
         };
-
-        // Add the new project to the unassigned project card
-        addProjectToUnassigned(newProject);
-
+ 
         // Send the new project to the fake API
         await sendProjectToApi(newProject);
-
+ 
+        fetchProjectsFromApi().then(projects => {
+            displayProjects(projects);
+            updateProjectCounts(projects); // Update the project counts
+        });
+ 
         // Hide the project creation form and modal
         projectForm.style.display = 'none';
         hideModal();
-
+ 
         // Reset the form
         projectForm.reset(); // No more error here
     });
-
+ 
     // Show the project creation form when clicking the "Create New Project" button
     createProjectButton.addEventListener('click', () => {
         projectForm.style.display = 'block';
         showModal();
     });
-
+ 
     // Toggle the visibility of the update form when the "Update" button is clicked
     updateProjectButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -206,14 +218,14 @@ if (container) {
             }
         });
     });
-
+ 
     // Hide the update form when the update form is submitted
     updateForm.addEventListener('submit', (event) => {
         event.preventDefault(); // Prevent the form from actually submitting
         updateForm.style.display = 'none';
         hideModal();
     });
-
+ 
     // Show the delete confirmation div when a delete button is clicked
     deleteProjectButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -221,18 +233,18 @@ if (container) {
             showModal();
         });
     });
-
+ 
     // Hide the delete confirmation div when "Yes" or "Cancel" is clicked
     deleteYesButton.addEventListener('click', () => {
         deleteProjectDiv.style.display = 'none';
         hideModal();
     });
-
+ 
     deleteNoButton.addEventListener('click', () => {
         deleteProjectDiv.style.display = 'none';
         hideModal();
     });
-
+ 
     // Function to show the appropriate user table based on button click
     function showUserTable(table: HTMLElement) {
         registeredUsersTable.style.display = 'none';
@@ -240,7 +252,7 @@ if (container) {
         unassignedUsersTable.style.display = 'none';
         table.style.display = 'block';
     }
-
+ 
     // Add event listeners to user buttons
     userButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -253,10 +265,10 @@ if (container) {
             }
         });
     });
-
+ 
     // Show the registered users table by default
     showUserTable(registeredUsersTable);
-
+ 
 } else {
     console.error('Container element not found');
 }
