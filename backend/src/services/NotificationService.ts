@@ -48,8 +48,8 @@ class NotificationService {
 
             const record = result.recordset[0];
             return new Notification(
-                record.Id,
-                record.UserId,
+                record.id,
+                record.userId,
                 record.message,
                 record.read,
                 record.createdAt,
@@ -78,8 +78,8 @@ class NotificationService {
 
             const record = result.recordset[0];
             return new Notification(
-                record.Id,
-                record.UserId,
+                record.id,
+                record.userId,
                 record.message,
                 record.read,
                 record.createdAt,
@@ -136,8 +136,8 @@ class NotificationService {
 
             return result.recordset.map((record: any) =>
                 new Notification(
-                    record.Id,
-                    record.UserId,
+                    record.id,
+                    record.userId,
                     record.message,
                     record.read,
                     record.createdAt,
@@ -168,8 +168,8 @@ class NotificationService {
 
             return result.recordset.map((record: any) =>
                 new Notification(
-                    record.Id,
-                    record.UserId,
+                    record.id,
+                    record.userId,
                     record.message,
                     record.read,
                     record.createdAt,
@@ -204,8 +204,8 @@ class NotificationService {
 
             const record = result.recordset[0];
             return new Notification(
-                record.Id,
-                record.UserId,
+                record.id,
+                record.userId,
                 record.message,
                 record.read,
                 record.createdAt,

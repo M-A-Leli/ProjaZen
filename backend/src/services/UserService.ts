@@ -16,7 +16,7 @@ class UserService {
 
             return result.recordset.map((record: any) =>
                 new User(
-                    record.Id,
+                    record.id,
                     record.fname,
                     record.lname,
                     record.email,
@@ -40,18 +40,25 @@ class UserService {
 
     public async getUserById(userId: string): Promise<User> {
         try {
+            // console.log('getUserById called with ID:', userId);
+
             const pool = await dbInstance.connect();
             const result = await pool.request()
                 .input('Id', sql.UniqueIdentifier, userId)
                 .execute('GetUserById');
+
+            // console.log('Database call result:', result);
 
             if (!result.recordset[0]) {
                 throw createError(404, 'User not found');
             }
 
             const record = result.recordset[0];
+
+            // console.log('Database record found:', record);
+            
             return new User(
-                record.Id,
+                record.id,
                 record.fname,
                 record.lname,
                 record.email,
@@ -95,7 +102,7 @@ class UserService {
 
             const record = result.recordset[0];
             return new User(
-                record.Id,
+                record.id,
                 record.fname,
                 record.lname,
                 record.email,
@@ -139,7 +146,7 @@ class UserService {
 
             const record = result.recordset[0];
             return new User(
-                record.Id,
+                record.id,
                 record.fname,
                 record.lname,
                 record.email,
@@ -200,7 +207,7 @@ class UserService {
 
             const record = result.recordset[0];
             return new User(
-                record.Id,
+                record.id,
                 record.fname,
                 record.lname,
                 record.email,
@@ -232,7 +239,7 @@ class UserService {
 
             return result.recordset.map((record: any) =>
                 new User(
-                    record.Id,
+                    record.id,
                     record.fname,
                     record.lname,
                     record.email,
@@ -265,7 +272,7 @@ class UserService {
 
             return result.recordset.map((record: any) =>
                 new User(
-                    record.Id,
+                    record.id,
                     record.fname,
                     record.lname,
                     record.email,

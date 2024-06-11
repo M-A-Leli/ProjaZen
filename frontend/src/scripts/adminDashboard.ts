@@ -8,6 +8,7 @@ interface Project {
     endDate: string;
 }
 
+
 // Select all sidebar items and sections
 const sidebarItems = document.querySelectorAll('.sidebar div');
 const sections = document.querySelectorAll('.section');

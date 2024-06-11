@@ -45,6 +45,20 @@ class UserAPI {
         return response.json();
     }
 
+    async fetchUserProfile(token: string): Promise<User> {
+        const response = await fetch(`${this.baseURL}/users/profile`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch user profile');
+        }
+
+        return response.json();
+    }
+
     async createUser(user: User, token: string): Promise<string> {
         const response = await fetch(`${this.baseURL}/users`, {
             method: 'POST',

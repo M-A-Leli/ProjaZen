@@ -9,281 +9,379 @@
 </head>
 
 <body>
-    <div class="sidebar">
+    <header>
+        <div class="logo">
+            <img src="/logo.svg" alt="logo">
+            <h2>ProjaZen</h2>
+        </div>
+    </header>
 
-        <div class="admin">
-            <ion-icon name="person-circle-outline"></ion-icon>
-            <p>Admin</p>
-        </div>
-        <hr>
-        <div class="projects" id="nav-projects">
-            <ion-icon name="albums-outline"></ion-icon>
-            <p>Projects</p>
-        </div>
-        <hr>
-        <div class="users" id="nav-users">
-            <ion-icon name="people-outline"></ion-icon>
-            <p>Users</p>
-        </div>
-        <hr>
-        <div class="notifications" id="nav-notifications">
-            <ion-icon name="notifications-circle-outline"></ion-icon>
-            <p>Notifications</p>
-        </div>
-        <hr>
-        <div class="logout" id="nav-logout">
-            <ion-icon name="log-out-outline"></ion-icon>
-            <p>Log Out</p>
+    <main>
+
+        <div class="sidebar">
+
+            <!-- <div class="nav-item" id="nav-admin">
+                <button>close</button>
+            </div> -->
+            <div class="nav-item" id="nav-profile">
+                <ion-icon name="person-circle-outline"></ion-icon>
+                <p>profile</p>
+            </div>
+            <div class="nav-item" id="nav-projects">
+                <ion-icon name="albums-outline"></ion-icon>
+                <p>projects</p>
+            </div>
+            <div class="nav-item" id="nav-users">
+                <ion-icon name="people-outline"></ion-icon>
+                <p>users</p>
+            </div>
+            <div class="nav-item" id="nav-assignments">
+                <ion-icon name="notifications-circle-outline"></ion-icon>
+                <p>assignments</p>
+            </div>
+            <div class="nav-item" id="nav-notifications">
+                <ion-icon name="notifications-circle-outline"></ion-icon>
+                <p>notifications</p>
+            </div>
+            <div class="nav-item" id="nav-logout">
+                <ion-icon name="log-out-outline"></ion-icon>
+                <p>Log Out</p>
+            </div>
+
         </div>
 
-    </div>
-    <div class="container">
-        <section id="projects" class="section">
-            <div class="welcome">
-                <div class="welcome-image">
-                    <img src="/welcome-image.avif" alt="welcome-image">
-                </div>
-                <div class="welcome-text">
-                    <p style="font-weight: 900;">Welcome Back!</p>
-                    <p style="color: blue; font-size: 30px; font-weight: 900;">Admin Name</p>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel maiores nihil magni rem repellendus
-                        illum optio iusto exercitationem iste, soluta ullam iure unde nemo natus eius dolore
-                        voluptatibus dicta! Nobis.</p>
-                </div>
-            </div>
-            <div class="projects-block">
-                <div class="create-project-button">
-                    <button class="create-project-button">Create New Project</button>
-                </div>
-                <div class="project-form" style="display: none;">
-                    <form style="background-color: rgb(88, 88, 233); width: 20vw; padding: 20px;">
-                        <label for="">Project Name</label>
-                        <br>
-                        <input type="text" id="project-name">
-                        <br><br>
-                        <label for="">Description</label>
-                        <br>
-                        <textarea id="text-area"></textarea>
-                        <br><br>
-                        <label for="">Start Date</label>
-                        <br>
-                        <input type="date" id="start-date">
-                        <br><br>
-                        <label for="">End Date</label>
-                        <br>
-                        <input type="date" id="end-date">
-                        <br><br>
-                        <button type="submit">Create Project</button>
-                        <button type="cancel" id="cancel">Cancel</button>
-                        <br><br>
-                    </form>
-                    
-                </div>
-               
-            </div>
-            <div class="projects-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Project Name</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                    </tbody>
-                </table>
-                <div class="update-form" style="display: none;">
-                    <form>
-                        <label for="update-project-name">Project Name</label>
-                        <br>
-                        <input type="text" id="update-project-name">
-                        <br><br>
-                        <label for="update-text-area">Description</label>
-                        <br>
-                        <textarea id="update-text-area"></textarea>
-                        <br><br>
-                        <label for="update-start-date">Start Date</label>
-                        <br>
-                        <input type="date" id="update-start-date">
-                        <br><br>
-                        <label for="update-end-date">End Date</label>
-                        <br>
-                        <input type="date" id="update-end-date">
-                        <br><br>
-                        <button type="submit" id="update-submit-button">Update</button>
-                    </form>
-                </div>
-                <div class="delete-project">
-                    <p>Do you want to delete project?</p>
-                    <br><br>
-                    <div class="yes-no-buttons">
-                        <button id="yes">Yes</button>
-                        <button id="no">Cancel</button>
+        <div class="container">
+            <!-- ! sidebaer show btn -->
+
+            <!-- Profile -->
+
+            <section id="profile-section">
+                <div id="welcome">
+                    <div id="welcome-image">
+                        <img src="/welcome-image.avif" alt="welcome-image">
+                    </div>
+                    <div id="profile">
+                        <!-- ! -->
+                        <h2>Welcome Back!</h2>
+                        <h3 id="profile-name">Emily clary</h3>
+                        <h4 id="profile-email">emily.clary@example.com</h4>
+                        <p id="welcome-message">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, dolore
+                            aliquam unde vel odit fugit molestias. Vero, debitis nisi dolor doloremque architecto ullam
+                            nihil suscipit quisquam aliquam enim non a.</p>
                     </div>
                 </div>
-            </div>
-        </section>
-        <section id="users" class="section" style="display: none;">
-            <h1>User Management</h1>
-            <hr>
-            <div class="user-buttons">
-                <button>All Registered Users</button>
-                <button>Assigned</button>
-                <button>Unassigned</button>
-            </div>
-            <div class="registered-users">
-                <table>
-                    <tr>
-                        <th>id</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Actions</th>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Carolyne</td>
-                        <td>Musenya</td>
-                        <td>carolmartoz@gmail.com</td>
-                        <td>Tokyo@2023</td>
-                        <td>
-                            <button><ion-icon name="trash-outline" style="color: red;"></ion-icon></button>
-                        </td>
+            </section>
 
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Glen</td>
-                        <td>Ijatia</td>
-                        <td>glen@gmail.com</td>
-                        <td>Japan@2023</td>
-                        <td>
-                            <ion-icon name="trash-outline" style="color: red;"></ion-icon>
-                        </td>
+            <!-- Projects -->
 
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Alvin</td>
-                        <td>Leli</td>
-                        <td>alvin@yopmail.com</td>
-                        <td>Paris@2023</td>
-                        <td>
-                            <ion-icon name="trash-outline" style="color: red;"></ion-icon>
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Erick</td>
-                        <td>Muriugi</td>
-                        <td>erick@yopmail.com</td>
-                        <td>London@2023</td>
-                        <td>
-                            <ion-icon name="trash-outline" style="color: red;"></ion-icon>
-                        </td>
-
-                    </tr>
-                </table>
-            </div>
-            <div class="assigned-users">
-                <table>
-                    <tr>
-                        <th>id</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Assigned-to</th>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Glen</td>
-                        <td>Ijatia</td>
-                        <td>glen@gmail.com</td>
-                        <td>Japan@2023</td>
-                        <td>User Dashboard</td>
-
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Alvin</td>
-                        <td>Leli</td>
-                        <td>alvin@yopmail.com</td>
-                        <td>Paris@2023</td>
-                        <td>Login Form</td>
-
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Erick</td>
-                        <td>Muriugi</td>
-                        <td>erick@yopmail.com</td>
-                        <td>London@2023</td>
-                        <td>Register Form</td>
-
-                    </tr>
-                </table>
-            </div>
-            <div class="unassigned-users">
-                <table>
-                    <tr>
-                        <th>id</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Actions</th>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Carolyne</td>
-                        <td>Musenya</td>
-                        <td>carolmartoz@gmail.com</td>
-                        <td>Tokyo@2023</td>
-                        <td>
-                            <button style="background-color: cornflowerblue; color: white;">Assign Project</button>
-                        </td>
-
-                    </tr>
-                </table>
-            </div>
-
-        </section>
-        <section id="notifications" class="section" style="display: none;">
-            <h1>Notifications</h1>
-            <hr>
-            <div class="notifications-buttons">
-                <button>Sent</button>
-                <button>Received</button>
-            </div>
-        </section>
-        <section id="logout" class="section" style="display: none;">
-            <div class="logout-container">
-                <div class="logout-image">
-                    <img src="/logout-image.avif" alt="logout-image">
+            <section id="projects-section">
+                <div id="projects-status-selection" class="selection-container">
+                    <!-- ! -->
+                    <div class="status-selection selection-card">
+                        <h2>unassigned<span id="unassigned-status-count" class="status-count">17</span></h2>
+                    </div>
+                    <div class="status-selection selection-card">
+                        <h2>assigned<span id="assigned-status-count" class="status-count">17</span></h2>
+                    </div>
+                    <div class="status-selection selection-card">
+                        <h2>completed<span id="completed-status-count" class="status-count">17</span></h2>
+                    </div>
+                    <div class="status-selection selection-card">
+                        <h2>overdue<span id="overdue-status-count" class="status-count">17</span></h2>
+                    </div>
+                    <div class="status-selection selection-card">
+                        <h2>expired<span id="expired-status-count" class="status-count">17</span></h2>
+                    </div>
                 </div>
-                <div class="logout-text">
-                    <h2>Logout</h2>
-                    <form>
-                        <p>Are you sure you want to logout?</p>
-                        <button type="button"><a href="login.html" style="text-decoration: none; color: white;">Logout</a></button><br><br>
-                        <button>Cancel</button>
-                    </form>
+                <div class="top-bar">
+                    <!-- ! icon -->
+                    <button id="display-create-project-modal">new</button>
+                    <input type="search" id="search-for-project">
                 </div>
-            </div>
-        </section>
-    </div>
+                <div id="projects-container" class="entity-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>name</th>
+                                <th>description</th>
+                                <th>start date</th>
+                                <th>end date</th>
+                                <th>status</th>
+                                <th>actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- projects -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="create-project-modal" class="modal">
+                    <div class="modal-container">
+                        <form action="" id="create-project-form">
+                            <div class="form-group">
+                                <label for="project-name">name</label>
+                                <input name="project-name" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-description">description</label>
+                                <textarea name="project-description" id=""></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-start-date">start date</label>
+                                <input name="project-start-date" type="date">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-end-date">end date</label>
+                                <input name="project-end-date" type="date">
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="create">
+                            </div>
+                        </form>
+                        <button id="hide-create-project-modal">cancel</button>
+                    </div>
+                </div>
+                <div id="update-project-modal" class="modal">
+                    <div class="modal-container">
+                        <form action="" id="update-project-form">
+                            <div class="form-group">
+                                <label for="project-name">name</label>
+                                <input name="project-name" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-description">description</label>
+                                <textarea name="project-description" id=""></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-start-date">start date</label>
+                                <input name="project-start-date" type="date">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-end-date">end date</label>
+                                <input name="project-end-date" type="date">
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="update">
+                            </div>
+                        </form>
+                        <button id="hide-update-project-modal">cancel</button>
+                    </div>
+                </div>
+                <div id="delete-project-modal" class="modal">
+                    <div class="modal-container">
+                        <span class="close-modal" id="close-delete-project-modal-btn"><i class="fa-solid fa-circle-xmark"></i></span>
+                        <p>Are you sure you want to delete this project?</p>
+                        <div class="buttons">
+                            <button id="confirm-delete-project-btn" class="confirm-action">Yes</button>
+                            <button id="cancel-delete-project-btn" class="cancel-action">No</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users -->
+
+            <section id="users-section">
+                <div id="users-availability-selection" class="selection-container">
+                    <!-- ! -->
+                    <div class="availability-selection selection-card">
+                        <h2>all<span id="all-users-count" class="user-count">17</span></h2>
+                    </div>
+                    <div class="availability-selection selection-card">
+                        <h2>unassigned<span id="unassigned-users-count" class="user-count">17</span></h2>
+                    </div>
+                    <div class="availability-selection selection-card">
+                        <h2>assigned<span id="assigned-users-count" class="user-count">17</span></h2>
+                    </div>
+                </div>
+                <div class="top-bar">
+                    <!-- ! icon -->
+                    <button id="display-create-user-modal">new</button>
+                    <input type="search" id="search-for-user">
+                </div>
+                <div id="users-container" class="entity-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>number</th>
+                                <th>first name</th>
+                                <th>last name</th>
+                                <th>email</th>
+                                <th>actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- users -->
+                            <!-- ! <ion-icon name="trash-outline"></ion-icon> -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="create-user-modal" class="modal">
+                    <div class="modal-container">
+                        <form action="" id="create-user-form">
+                            <div class="form-group">
+                                <label for="user-fname">first name</label>
+                                <input name="user-fname" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-lname">last name</label>
+                                <input name="user-lname" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-email">email</label>
+                                <input name="user-email" type="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-password">password</label>
+                                <input name="user-password" type="password">
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="create">
+                            </div>
+                        </form>
+                        <button id="hide-create-user-modal">cancel</button>
+                    </div>
+                </div>
+                <div id="update-user-modal" class="modal">
+                    <div class="modal-container">
+                        <span class="close-modal" id="close-promote-user-modal-btn"><i class="fa-solid fa-circle-xmark"></i></span>
+                        <p>Are you sure you want to make this user an admin?</p>
+                        <div class="buttons">
+                            <button id="confirm-promote-user-btn" class="confirm-action">Yes</button>
+                            <button id="cancel-promote-user-btn" class="cancel-action">No</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="delete-user-modal" class="modal">
+                    <div class="modal-container">
+                        <span class="close-modal" id="close-delete-user-modal-btn"><i class="fa-solid fa-circle-xmark"></i></span>
+                        <p>Are you sure you want to delete this user?</p>
+                        <div class="buttons">
+                            <button id="confirm-delete-user-btn" class="confirm-action">Yes</button>
+                            <button id="cancel-delete-user-btn" class="cancel-action">No</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Assignments -->
+            <section id="assignments-section">
+                <div class="top-bar">
+                    <button id="display-match-maker">new</button>
+                    <label for="assigment-filter">filter by</label>
+                    <select name="assigment-filter" id="filter-assignments-by">
+                        <option value="project-name">project name</option>
+                        <option value="user-name">user email</option>
+                    </select>
+                    <input type="search" id="search-for-assignment">
+                    <button id="hide-match-maker">close</button>
+                    <button id="create-assignment-btn">assign</button>
+                </div>
+                <div id="assignments-container" class="entity-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>number</th>
+                                <th>project</th>
+                                <th>user</th>
+                                <th>actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- assignments -->
+                            <!-- ! <ion-icon name="trash-outline"></ion-icon> -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="match-maker">
+                    <div id="available-projects">
+                        <div class="search-container">
+                            <input type="search" id="search-through-unassigned-projects">
+                        </div>
+                        <div id="available-projects-container">
+                            <!-- Available projects -->
+                        </div>
+                    </div>
+                    <div id="available-users">
+                        <div class="search-container">
+                            <input type="search" id="search-through-unassigned-users">
+                        </div>
+                        <div id="available-users-container">
+                            <!-- Available users -->
+                        </div>
+                    </div>
+                </div>
+                <div id="unassign-user-modal" class="modal">
+                    <div class="modal-container">
+                        <span class="close-modal" id="close-unassign-user-modal-btn"><i class="fa-solid fa-circle-xmark"></i></span>
+                        <p>Are you sure you want to unassing user from project?</p>
+                        <div class="buttons">
+                            <button id="confirm-unassign-user-btn" class="confirm-action">Yes</button>
+                            <button id="cancel-unassign-user-btn" class="close-action">No</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Notifications -->
+
+            <section id="notifications-section">
+                <div class="top-bar">
+                    <!-- ! <button id="compose-notification-btn">compose</button> -->
+                    <button id="all-notifications-btn">new</button>
+                    <button id="read-notifications-btn">read</button>
+                    <button id="unread-notifications-btn">unread</button>
+                </div>
+                <div id="notifications-container" class="entity-container">
+                    <div id="notifications-list">
+                        <!-- notifications -->
+                    </div>
+                    <div id="notifications-display">
+                        <!-- notification -->
+                    </div>
+                </div>
+                <div id="delete-notification-modal" class="nodal">
+                    <div class="modal-container">
+                        <span class="close-modal" id="close-delete-notification-modal-btn"><i class="fa-solid fa-circle-xmark"></i></span>
+                        <p>Are you sure you want to unassing user from project?</p>
+                        <div class="buttons">
+                            <button id="confirm-delete-notification-btn" class="confirm-action">Yes</button>
+                            <button id="cancel-delete-notification-btn" class="cancel-action">No</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- logout -->
+
+            <section id="logout-section">
+                <div id="logout-container">
+                    <div id="logout-img">
+                        <img src="/logout-image.avif" alt="logout-image">
+                    </div>
+                    <div id="logout-form-container">
+                        <h2>logout</h2>
+                        <form action="" id="logout-form">
+                            <div class="form-group">
+                                <h3>Are you sure you want to logout?</h3>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="yes! i would like to leave">
+                            </div>
+                        </form>
+                        <button id="cancel-logout">no! i would like to stay</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-    <script type="module" src="../scripts/adminDashboard.ts"></script>
+    <script type="module" src="../scripts/Temp.ts"></script>
 </body>
 
 </html>
