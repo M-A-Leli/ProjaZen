@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import session from 'express-session';
+import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import routes from './routes';
@@ -15,6 +16,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(
     session({
         secret: process.env.SESSION_SECRET || '',
@@ -27,6 +30,12 @@ app.use(
         },
     })
 );
+
+// app.use((req, res, next) => {
+//     console.log('Headers:', req.headers);
+//     console.log('Cookies:', req.cookies);
+//     next();
+// });
 
 // Routes
 app.use('/api/v1', routes);

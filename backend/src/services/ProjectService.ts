@@ -2,6 +2,7 @@ import createError from 'http-errors';
 import { dbInstance } from '../database/dbInit';
 import * as sql from 'mssql';
 import Project from '../models/Project';
+import { sendProjectCompletedEmail } from './EmailService';
 import { v4 as uuidv4 } from 'uuid';
 
 class ProjectService {
@@ -16,7 +17,7 @@ class ProjectService {
 
             return result.recordset.map((record: any) =>
                 new Project(
-                    record.Id,
+                    record.id,
                     record.name,
                     record.description,
                     record.startDate,
@@ -50,7 +51,7 @@ class ProjectService {
 
             const record = result.recordset[0];
             return new Project(
-                record.Id,
+                record.id,
                 record.name,
                 record.description,
                 record.startDate,
@@ -90,8 +91,11 @@ class ProjectService {
                 .execute('CreateProject');
 
             const record = result.recordset[0];
+
+            console.log(record);
+            
             return new Project(
-                record.Id,
+                record.id,
                 record.name,
                 record.description,
                 record.startDate,
@@ -133,7 +137,7 @@ class ProjectService {
 
             const record = result.recordset[0];
             return new Project(
-                record.Id,
+                record.id,
                 record.name,
                 record.description,
                 record.startDate,
@@ -193,7 +197,7 @@ class ProjectService {
 
             return result.recordset.map((record: any) =>
                 new Project(
-                    record.Id,
+                    record.id,
                     record.name,
                     record.description,
                     record.startDate,
@@ -227,7 +231,7 @@ class ProjectService {
 
             const record = result.recordset[0];
             return new Project(
-                record.Id,
+                record.id,
                 record.name,
                 record.description,
                 record.startDate,
@@ -253,18 +257,18 @@ class ProjectService {
             const existingProject = await pool.request()
                 .input('Id', sql.UniqueIdentifier, id)
                 .execute('GetProjectById');
-
+    
             if (!existingProject.recordset[0]) {
                 throw createError(404, 'Project not found');
             }
-
+    
             const result = await pool.request()
                 .input('Id', sql.UniqueIdentifier, id)
                 .execute('MarkProjectAsCompleted');
-
+    
             const record = result.recordset[0];
-            return new Project(
-                record.Id,
+            const project = new Project(
+                record.id,
                 record.name,
                 record.description,
                 record.startDate,
@@ -273,6 +277,26 @@ class ProjectService {
                 record.createdAt,
                 record.updatedAt
             );
+    
+            const assignmentsResult = await pool.request()
+                .input('ProjectId', sql.UniqueIdentifier, id)
+                .execute('GetAssignmentsByProjectId');
+    
+            for (const assignment of assignmentsResult.recordset) {
+                const userResult = await pool.request()
+                    .input('UserId', sql.UniqueIdentifier, assignment.UserId)
+                    .execute('GetUserById');
+    
+                const user = userResult.recordset[0];
+    
+                await sendProjectCompletedEmail(user.email, {
+                    fname: user.fname,
+                    lname: user.lname,
+                    projectName: project.getName(),
+                });
+            }
+    
+            return project;
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -318,12 +342,12 @@ class ProjectService {
 
             return result.recordset.map((record: any) =>
                 new Project(
-                    record.Id,
-                    record.Name,
-                    record.Description,
-                    record.StartDate,
-                    record.EndDate,
-                    record.Status
+                    record.id,
+                    record.name,
+                    record.description,
+                    record.startDate,
+                    record.endDate,
+                    record.status
                 )
             );
         } catch (error) {

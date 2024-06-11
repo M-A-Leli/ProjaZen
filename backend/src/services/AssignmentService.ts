@@ -2,13 +2,14 @@ import createError from 'http-errors';
 import { dbInstance } from '../database/dbInit';
 import * as sql from 'mssql';
 import Assignment from '../models/Assignment';
+import { sendAssignmentCreatedEmail, sendAssignmentDeletedEmail } from './EmailService';
 import { v4 as uuidv4 } from 'uuid';
 
 class AssignmentService {
     public async getAllAssignments(): Promise<Assignment[]> {
         try {
             const pool = await dbInstance.connect();
-            const result = await pool.request().execute('GetAllAssignments');
+            const result = await pool.request().execute('GetAssignments');
 
             if (result.recordset.length === 0) {
                 throw createError(404, 'No assignments at the moment');
@@ -16,9 +17,9 @@ class AssignmentService {
 
             return result.recordset.map((record: any) =>
                 new Assignment(
-                    record.Id,
-                    record.UserId,
-                    record.ProjectId,
+                    record.id,
+                    record.userId,
+                    record.projectId,
                     record.createdAt,
                     record.updatedAt
                 )
@@ -47,9 +48,9 @@ class AssignmentService {
 
             const record = result.recordset[0];
             return new Assignment(
-                record.Id,
-                record.UserId,
-                record.ProjectId,
+                record.id,
+                record.userId,
+                record.projectId,
                 record.createdAt,
                 record.updatedAt
             );
@@ -73,15 +74,37 @@ class AssignmentService {
                 .input('UserId', sql.UniqueIdentifier, userId)
                 .input('ProjectId', sql.UniqueIdentifier, projectId)
                 .execute('CreateAssignment');
-
+    
             const record = result.recordset[0];
-            return new Assignment(
-                record.Id,
-                record.UserId,
-                record.ProjectId,
+            const assignment = new Assignment(
+                record.id,
+                record.userId,
+                record.projectId,
                 record.createdAt,
                 record.updatedAt
             );
+    
+            const userResult = await pool.request()
+                .input('UserId', sql.UniqueIdentifier, userId)
+                .execute('GetUserById');
+    
+            const projectResult = await pool.request()
+                .input('ProjectId', sql.UniqueIdentifier, projectId)
+                .execute('GetProjectById');
+    
+            const user = userResult.recordset[0];
+            const project = projectResult.recordset[0];
+    
+            await sendAssignmentCreatedEmail(user.email, {
+                fname: user.fname,
+                lname: user.lname,
+                projectName: project.name,
+                projectDescription: project.description,
+                startDate: project.startDate,
+                endDate: project.endDate,
+            });
+    
+            return assignment;
         } catch (error) {
             if (error instanceof createError.HttpError) {
                 throw error;
@@ -99,15 +122,33 @@ class AssignmentService {
             const existingAssignment = await pool.request()
                 .input('Id', sql.UniqueIdentifier, assignmentId)
                 .execute('GetAssignmentById');
-
+    
             if (!existingAssignment.recordset[0]) {
                 throw createError(404, 'Assignment not found');
             }
-
+    
+            const assignment = existingAssignment.recordset[0];
             await pool.request()
                 .input('Id', sql.UniqueIdentifier, assignmentId)
                 .execute('DeleteAssignment');
-
+    
+            const userResult = await pool.request()
+                .input('UserId', sql.UniqueIdentifier, assignment.UserId)
+                .execute('GetUserById');
+    
+            const projectResult = await pool.request()
+                .input('ProjectId', sql.UniqueIdentifier, assignment.ProjectId)
+                .execute('GetProjectById');
+    
+            const user = userResult.recordset[0];
+            const project = projectResult.recordset[0];
+    
+            await sendAssignmentDeletedEmail(user.email, {
+                fname: user.fname,
+                lname: user.lname,
+                projectName: project.name,
+            });
+    
             return true;
         } catch (error) {
             if (error instanceof createError.HttpError) {
@@ -133,9 +174,9 @@ class AssignmentService {
 
             return result.recordset.map((record: any) =>
                 new Assignment(
-                    record.Id,
-                    record.UserId,
-                    record.ProjectId,
+                    record.id,
+                    record.userId,
+                    record.projectId,
                     record.createdAt,
                     record.updatedAt
                 )
@@ -164,9 +205,9 @@ class AssignmentService {
 
             return result.recordset.map((record: any) =>
                 new Assignment(
-                    record.Id,
-                    record.UserId,
-                    record.ProjectId,
+                    record.id,
+                    record.userId,
+                    record.projectId,
                     record.createdAt,
                     record.updatedAt
                 )

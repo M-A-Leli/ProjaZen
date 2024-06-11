@@ -66,8 +66,26 @@ interface DecodedToken {
 //     next();
 // };
 
+const isValidGuid = (id: string): boolean => {
+    const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+    return guidRegex.test(id);
+};
+
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.accessToken || (req.header('Authorization')?.split(' ')[1]) || '';
+    // Check cookies first
+    let token = req.cookies.accessToken;
+
+    // If not found in cookies, check Authorization header
+    if (!token) {
+        const authHeader = req.header('Authorization');
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            // Remove any extra spaces and extract the token correctly
+            const parts = authHeader.split(' ');
+            if (parts.length >= 2) {
+                token = parts.slice(1).join(' ').trim();
+            }
+        }
+    }
 
     if (!token) {
         return res.redirect('/login');
@@ -79,8 +97,17 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
             id: decoded.userId,
             role: decoded.role
         };
+        
+        // console.log('Decoded user ID:', req.user.id);
+        // console.log('Decoded user role:', req.user.role);
+
+        if (!isValidGuid(req.user.id)) {
+            throw createError(400, 'Invalid User ID');
+        }
+
         next();
     } catch (error) {
+        console.log('Token verification failed:', error);
         return next(createError(401, 'Invalid Token'));
     }
 };

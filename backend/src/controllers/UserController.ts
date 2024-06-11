@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import bcrypt from 'bcrypt';
 import { validationResult } from 'express-validator';
 import UserService from '../services/UserService';
 import User from '../models/User';
@@ -36,17 +37,22 @@ class UserController {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-    
-        const { fname, lname, email, password, salt, role } = req.body;
-    
+
+        const { fname, lname, email, password, role } = req.body;
+
         try {
-            const newUser = await UserService.createUser(fname, lname, email, password, salt, role);
+            const saltRounds = 10;
+            const salt = await bcrypt.genSalt(saltRounds);
+
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            const newUser = await UserService.createUser(fname, lname, email, hashedPassword, salt, role);
+
             res.status(201).json(this.transformUser(newUser));
         } catch (error) {
             next(error);
         }
     }
-    
 
     async updateUser(req: Request, res: Response, next: NextFunction) {
         const { id } = req.params;
@@ -64,11 +70,17 @@ class UserController {
         //     salt: req.body.salt, // Assuming this field can be updated
         //     role: req.body.role // Assuming this field can be updated
         // };
-    
-        const user = new User(id, req.body.fname, req.body.lname, req.body.email, req.body.password, req.body.salt, req.body.role);
-    
+
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+        const user = new User(id, req.body.fname, req.body.lname, req.body.email, hashedPassword, salt, req.body.role);
+
         try {
             const updatedUser = await UserService.updateUser(user);
+
             res.json(this.transformUser(updatedUser));
         } catch (error) {
             next(error);
@@ -89,20 +101,26 @@ class UserController {
     }
 
     // Get user profile
-    // async getUserProfile(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         const { userId } = req.params;
-    //         const userProfile = await UserService.getUserProfile(userId);
-    //         res.json(userProfile);
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // }
+    async getUserProfile(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log('Controller - User ID:', req.user?.id);
+            console.log('Controller - User Role:', req.user?.role);
+
+            // Use the correct userId from the authenticated user's token
+            const userId = req.user?.id as string;
+            const userProfile = await UserService.getUserById(userId);
+
+            console.log('userprofile:', userProfile);
+            res.json(userProfile);
+        } catch (error) {
+            next(error);
+        }
+    }
 
     // Update user profile
     // async updateUserProfile(req: Request, res: Response, next: NextFunction) {
     //     try {
-    //         const { userId } = req.params;
+    //         const userId = req.user?.id;
     //         const updatedFields = req.body; // Fields user wants to update
     //         const updatedUserProfile = await UserService.updateUserProfile(userId, updatedFields);
     //         res.json(updatedUserProfile);
